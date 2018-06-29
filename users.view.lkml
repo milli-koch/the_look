@@ -72,15 +72,15 @@ view: users {
     drill_fields: [detail*]
   }
 
-  # ----- Sets of fields for drilling ------
   set: detail {
     fields: [
+      order_items.returned,
+      order_items.sale_price,
+      order_items.count,
       id,
       first_name,
       last_name,
-      events.count,
       orders.count,
-      user_data.count
     ]
   }
 }

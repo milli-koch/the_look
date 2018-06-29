@@ -1,23 +1,36 @@
 connection: "thelook"
 
-# include all the views
 include: "*.view"
 
-# include all the dashboards
 include: "*.dashboard"
 
 datagroup: the_look_default_datagroup {
-  # sql_trigger: SELECT MAX(id) FROM etl_log;;
-  max_cache_age: "1 hour"
+  sql_trigger: SELECT MAX(id) FROM etl_log;;
+  max_cache_age: "24 hours"
+}
+
+datagroup: four_hour_cache {
+  max_cache_age: "4 hours"
 }
 
 persist_with: the_look_default_datagroup
 
-explore: events {
-  join: users {
+explore: users {
+  persist_with: four_hour_cache
+   join: events {
     type: left_outer
     sql_on: ${events.user_id} = ${users.id} ;;
-    relationship: many_to_one
+    relationship: one_to_many
+  }
+
+  join: orders {
+    sql_on: ${users.id} = ${orders.user_id} ;;
+    relationship: one_to_many
+  }
+
+  join: user_data {
+    sql_on: ${user_data.user_id} = ${users.id} ;;
+    relationship: one_to_many
   }
 }
 
@@ -30,6 +43,7 @@ explore: inventory_items {
 }
 
 explore: order_items {
+  fields: [users.detail*]
   join: inventory_items {
     type: left_outer
     sql_on: ${order_items.inventory_item_id} = ${inventory_items.id} ;;
@@ -62,19 +76,3 @@ explore: orders {
     relationship: many_to_one
   }
 }
-
-explore: products {}
-
-explore: schema_migrations {}
-
-explore: user_data {
-  join: users {
-    type: left_outer
-    sql_on: ${user_data.user_id} = ${users.id} ;;
-    relationship: many_to_one
-  }
-}
-
-explore: users {}
-
-explore: users_nn {}
