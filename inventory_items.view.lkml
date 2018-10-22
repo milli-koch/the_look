@@ -50,4 +50,9 @@ view: inventory_items {
     type: count
     drill_fields: [id, products.item_name, products.id, order_items.count]
   }
+
+  measure: testing {
+    type: number
+    sql: case when ${products.count} = 1 then 'true' else 'false' end ;;
+  }
 }

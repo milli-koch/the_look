@@ -33,9 +33,27 @@ view: order_items {
     sql: ${TABLE}.returned_at ;;
   }
 
+  measure: divide_test{
+    type: number
+    sql: ${returned_date}/${users.created_date} ;;
+    drill_fields: [returned_date, users.created_date]
+  }
+
   dimension: sale_price {
     type: number
     sql: ${TABLE}.sale_price ;;
+  }
+
+  measure: average_sale_price {
+    type: average
+    sql: ${sale_price} ;;
+  }
+
+  dimension: case{
+    type: string
+    sql: case when ${sale_price} between 1 and 5 then 'true'
+    when ${sale_price} > 5 then 'false'
+    else 'null' end;;
   }
 
   measure: count {
