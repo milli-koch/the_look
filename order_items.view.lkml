@@ -1,16 +1,38 @@
 view: order_items {
   sql_table_name: demo_db.order_items ;;
 
-  dimension: id {
-    primary_key: yes
-    type: number
-    sql: ${TABLE}.id ;;
-  }
+#   dimension: item_id {
+#     primary_key: yes
+#     type: number
+#     sql: ${TABLE}.id ;;
+#   }
 
   dimension: inventory_item_id {
     type: number
-    hidden: yes
     sql: ${TABLE}.inventory_item_id ;;
+  }
+
+
+#   filter: id_filter {
+#     sql: {% condition order_region %} order.region {% endcondition %}
+#  ;;
+# }
+
+  filter: category_count_picker {
+    description: "Use with the Category Count measure"
+    type: string
+  }
+
+  measure: category_count {
+    description: "Use with the Category Count Picker filter-only field"
+    type: sum
+    sql:
+    CASE
+      WHEN {% condition category_count_picker %} ${products.category} {% endcondition %}
+      THEN 1
+      ELSE 0
+    END
+  ;;
   }
 
   dimension: order_id {
@@ -42,6 +64,19 @@ view: order_items {
   dimension: sale_price {
     type: number
     sql: ${TABLE}.sale_price ;;
+    value_format_name: usd
+    html: <font color="green">{{rendered_value}}</font> ;;
+  }
+
+  measure: total_sale_price {
+    type: sum
+    sql: ${sale_price} ;;
+  }
+
+  measure: percent_of_total {
+    type: percent_of_total
+    sql: ${average_sale_price} ;;
+    value_format: "0.00\%"
   }
 
   measure: average_sale_price {
@@ -58,6 +93,32 @@ view: order_items {
 
   measure: count {
     type: count
-    drill_fields: [id, inventory_items.id, orders.id]
+    drill_fields: [ inventory_items.id, orders.id]
+  }
+
+  parameter: metric_selector {
+    type: string
+
+    allowed_value: {
+      label: "First-Time Shopper Revenue"
+      value: "total_first_purchase_revenue"
+    }
+    allowed_value: {
+      label: "Returning Shopper Revenue"
+      value: "total_returning_shopper_revenue"
+    }
+  }
+
+  filter: metric {
+    type: number
+    sql:
+      CASE
+        WHEN {% parameter metric_selector %} = 'total_first_purchase_revenue' THEN
+          ${sale_price}
+        WHEN {% parameter metric_selector %} = 'total_returning_shopper_revenue' THEN
+          ${inventory_item_id}
+        ELSE
+          NULL
+      END ;;
   }
 }

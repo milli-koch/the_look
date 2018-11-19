@@ -8,7 +8,7 @@ view: inventory_items {
   }
 
   dimension: cost {
-    type: number
+    type: string
     sql: ${TABLE}.cost ;;
   }
 
@@ -20,7 +20,6 @@ view: inventory_items {
       date,
       week,
       month,
-      quarter,
       year
     ]
     sql: ${TABLE}.created_at ;;

@@ -7,6 +7,7 @@ datagroup: the_look_default_datagroup {
   max_cache_age: "24 hours"
 }
 
+
 datagroup: four_hour_cache {
   max_cache_age: "4 hours"
 }
@@ -51,8 +52,8 @@ explore: users {
   join: user_data {
     sql_on: ${user_data.user_id} = ${users.id} ;;
     relationship: one_to_many
-
   }
+
 }
 
 explore: inventory_items {
