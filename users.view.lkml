@@ -7,6 +7,18 @@ view: users {
     sql: ${TABLE}.id ;;
   }
 
+  filter: user {
+    type: string
+  }
+
+#   filter: employee_and_customer_location {
+#     sql:
+#       {% condition user %} ${users.id} {% endcondition %}
+#           AND
+#       {% condition user %} ${users.name} {% endcondition %}
+#   ;;
+#   }
+
   dimension: age {
     type: number
     sql: ${TABLE}.age ;;
@@ -45,6 +57,7 @@ view: users {
   dimension: first_name {
     type: string
     sql: ${TABLE}.first_name ;;
+    html: <b><center>{{value}}</center></b> ;;
   }
 
   dimension: gender {
@@ -52,9 +65,19 @@ view: users {
     sql: ${TABLE}.gender ;;
   }
 
+  dimension: is_female {
+    type: yesno
+    sql: ${gender} = "f";;
+  }
+
   dimension: last_name {
     type: string
     sql: ${TABLE}.last_name ;;
+  }
+
+  dimension: name {
+    type: string
+    sql: concat(${first_name}, " ", ${last_name}) ;;
   }
 
   dimension: state {
@@ -72,15 +95,15 @@ view: users {
     drill_fields: [detail*]
   }
 
-  # ----- Sets of fields for drilling ------
   set: detail {
     fields: [
+      order_items.returned,
+      order_items.sale_price,
+      order_items.count,
       id,
       first_name,
       last_name,
-      events.count,
       orders.count,
-      user_data.count
     ]
   }
 }

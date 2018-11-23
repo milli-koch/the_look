@@ -8,7 +8,7 @@ view: inventory_items {
   }
 
   dimension: cost {
-    type: number
+    type: string
     sql: ${TABLE}.cost ;;
   }
 
@@ -20,7 +20,6 @@ view: inventory_items {
       date,
       week,
       month,
-      quarter,
       year
     ]
     sql: ${TABLE}.created_at ;;
@@ -28,7 +27,7 @@ view: inventory_items {
 
   dimension: product_id {
     type: number
-    # hidden: yes
+    hidden: yes
     sql: ${TABLE}.product_id ;;
   }
 
@@ -49,5 +48,10 @@ view: inventory_items {
   measure: count {
     type: count
     drill_fields: [id, products.item_name, products.id, order_items.count]
+  }
+
+  measure: testing {
+    type: number
+    sql: case when ${products.count} = 1 then 'true' else 'false' end ;;
   }
 }
