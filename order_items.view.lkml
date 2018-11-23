@@ -1,11 +1,11 @@
 view: order_items {
   sql_table_name: demo_db.order_items ;;
 
-#   dimension: item_id {
-#     primary_key: yes
-#     type: number
-#     sql: ${TABLE}.id ;;
-#   }
+  dimension: item_id {
+    primary_key: yes
+    type: number
+    sql: ${TABLE}.id ;;
+  }
 
   dimension: inventory_item_id {
     type: number
@@ -75,7 +75,7 @@ view: order_items {
 
   measure: percent_of_total {
     type: percent_of_total
-    sql: ${average_sale_price} ;;
+    sql: case when ${returned_date} < "2018-07-01" then null else ${average_sale_price} end ;;
     value_format: "0.00\%"
   }
 
@@ -94,6 +94,7 @@ view: order_items {
   measure: count {
     type: count
     drill_fields: [ inventory_items.id, orders.id]
+#     sql: case when ${returned_date} < "2018-07-01" then null else count(*) end ;;
   }
 
   parameter: metric_selector {
