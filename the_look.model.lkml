@@ -73,7 +73,7 @@ explore: order_items {
   }
 
   join: orders {
-    fields: [orders.status]
+#     fields: [ordesrs.status]
     type: left_outer
     sql_on: ${order_items.order_id} = ${orders.id} ;;
     relationship: many_to_one

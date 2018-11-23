@@ -160,11 +160,11 @@ view: orders {
 
   dimension: is_cancelled {
     type: yesno
-    sql: ${status} = "cancelled" ;;
+    sql: ${statuz} = "cancelled" ;;
   }
 
 
-  dimension: status {
+  dimension: statuz {
     type: string
     sql: ${TABLE}.status ;;
   }

@@ -12,6 +12,11 @@ view: inventory_items {
     sql: ${TABLE}.cost ;;
   }
 
+  dimension: dummy2 {
+    type: string
+    sql: ${cost} ;;
+  }
+
   dimension_group: created {
     type: time
     timeframes: [
