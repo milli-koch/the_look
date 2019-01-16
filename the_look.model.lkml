@@ -7,7 +7,6 @@ datagroup: the_look_default_datagroup {
   max_cache_age: "24 hours"
 }
 
-
 datagroup: four_hour_cache {
   max_cache_age: "4 hours"
 }
@@ -91,3 +90,5 @@ explore: order_items {
     relationship: many_to_one
   }
 }
+
+explore: customer_facts {}

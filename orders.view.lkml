@@ -9,7 +9,6 @@ view: orders {
 
   dimension_group: created {
     type: time
-    # label: "Created Date"
     timeframes: [
       raw,
       second,
@@ -26,10 +25,26 @@ view: orders {
       day_of_week
     ]
     sql: ${TABLE}.created_at ;;
+#     datatype: date
     convert_tz: no
   }
 
-  dimension_group: created_other_date{
+  dimension: tz_date {
+    type: date
+    sql: ${created_date} ;;
+#     convert_tz: no
+  }
+
+  filter: date_filter {
+    type: date
+  }
+
+  dimension: date_field {
+    type: date
+    sql: concat(${TABLE}.year, "-", ${TABLE}.month) ;;
+  }
+
+  dimension_group: created_other {
     type: time
     timeframes: [
       raw,
@@ -71,26 +86,24 @@ view: orders {
           END ;;
   }
 
-  filter: date_filter {
+  dimension: hours_formatted {
     type: date
+    sql: ${created_raw} ;;
+    html: {{ rendered_value | date: "%X" }} ;;
   }
-
-#   dimension: hours_formatted {
-#     type: date
-#     sql: ${created_raw} ;;
-#     html: {{ rendered_value | date: "%X" }} ;;
-#   }
 
   dimension_group: date_diff {
     type: duration
     intervals: [second, minute, hour]
-    sql_start: ${created_other_date_raw} ;;
+    sql_start: ${created_other_raw} ;;
     sql_end:${created_raw} ;;
+    html: {{ rendered_value | date: "%X" }} ;;
+
   }
 
   dimension: dur_hours {
     type: duration_hour
-    sql_start: ${created_other_date_raw} ;;
+    sql_start: ${created_other_raw} ;;
     sql_end:${created_raw} ;;
   }
 

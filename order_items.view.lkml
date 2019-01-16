@@ -10,29 +10,55 @@ view: order_items {
   dimension: inventory_item_id {
     type: number
     sql: ${TABLE}.inventory_item_id ;;
+    html: <a target="new" href="/looks/26">{{ value }}</a>;;
   }
-
-
-#   filter: id_filter {
-#     sql: {% condition order_region %} order.region {% endcondition %}
-#  ;;
-# }
 
   filter: category_count_picker {
     description: "Use with the Category Count measure"
     type: string
+    suggest_dimension: products.category
   }
 
   measure: category_count {
     description: "Use with the Category Count Picker filter-only field"
     type: sum
     sql:
-    CASE
-      WHEN {% condition category_count_picker %} ${products.category} {% endcondition %}
-      THEN 1
-      ELSE 0
-    END
-  ;;
+      CASE
+        WHEN {% condition category_count_picker %} ${products.category} {% endcondition %}
+        THEN 1
+        ELSE 0
+      END
+    ;;
+  }
+
+  filter: date_filter {
+    type: date
+  }
+
+  dimension: is_date_filter_start {
+    type: yesno
+    sql: ${orders.created_raw} = {% date_start date_filter %} ;;
+  }
+
+  dimension: is_date_filter_end {
+    type: yesno
+    sql: ${orders.created_raw} = {% date_end date_filter %} ;;
+  }
+
+  measure: count_date_start {
+    type: count
+    filters: {
+      field: is_date_filter_start
+      value: "yes"
+    }
+  }
+
+  measure: count_date_end {
+    type: count
+    filters: {
+      field: is_date_filter_end
+      value: "yes"
+    }
   }
 
   dimension: order_id {
@@ -93,7 +119,7 @@ view: order_items {
 
   measure: count {
     type: count
-    drill_fields: [ inventory_items.id, orders.id]
+#     drill_fields: [ inventory_items.id, orders.id]
 #     sql: case when ${returned_date} < "2018-07-01" then null else count(*) end ;;
   }
 

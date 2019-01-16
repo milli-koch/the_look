@@ -2,9 +2,14 @@ view: users {
   sql_table_name: demo_db.users ;;
 
   dimension: id {
-    primary_key: yes
-    type: number
+#     primary_key: yes
+    type: string
     sql: ${TABLE}.id ;;
+  }
+
+  dimension: name {
+    type: string
+    sql: concat(${first_name}, " ", ${last_name}) ;;
   }
 
   filter: user {
@@ -73,11 +78,6 @@ view: users {
   dimension: last_name {
     type: string
     sql: ${TABLE}.last_name ;;
-  }
-
-  dimension: name {
-    type: string
-    sql: concat(${first_name}, " ", ${last_name}) ;;
   }
 
   dimension: state {
