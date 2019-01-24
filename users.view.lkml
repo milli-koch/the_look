@@ -67,7 +67,7 @@ view: users {
 
   dimension: gender {
     type: string
-    sql: ${TABLE}.gender ;;
+    sql:${TABLE}.gender ;;
   }
 
   dimension: is_female {

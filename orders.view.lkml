@@ -176,7 +176,6 @@ view: orders {
     sql: ${statuz} = "cancelled" ;;
   }
 
-
   dimension: statuz {
     type: string
     sql: ${TABLE}.status ;;
