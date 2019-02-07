@@ -36,7 +36,7 @@ view: inventory_items {
 
   dimension: product_id {
     type: number
-    hidden: yes
+#     hidden: yes
     sql: ${TABLE}.product_id ;;
   }
 
@@ -60,7 +60,7 @@ view: inventory_items {
   }
 
   measure: testing {
-    type: number
-    sql: case when ${products.count} = 1 then 'true' else 'false' end ;;
+    type: sum
+    sql: case when ${product_id} < 10 then 'yes' else null end ;;
   }
 }

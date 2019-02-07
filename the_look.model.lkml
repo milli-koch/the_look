@@ -1,6 +1,7 @@
 connection: "thelook"
 
 include: "*.view"
+include: "products.explore.lkml"
 
 datagroup: the_look_default_datagroup {
   sql_trigger: SELECT MAX(id) FROM orders;;
@@ -12,6 +13,11 @@ datagroup: four_hour_cache {
 }
 
 persist_with: the_look_default_datagroup
+
+explore: products {
+  extends: [products_base]
+  hidden: no
+}
 
 explore: orders {
 #   persist_with: four_hour_cache
@@ -34,6 +40,7 @@ explore: orders {
   }
 
   join: products {
+#     fields: [products.category, products.item_name, products.department, products.rank]
     sql_on: ${inventory_items.product_id} =  ${products.id} ;;
     relationship: many_to_one
   }

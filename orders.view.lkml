@@ -39,9 +39,53 @@ view: orders {
     type: date
   }
 
-  dimension: date_field {
+
+
+
+  parameter: selected_city {
+    type: string
+    allowed_value: {
+      label: "New York"
+      value: "New York"
+    }
+    allowed_value: {
+      label: "Farmingdale"
+      value: "Farmingdale"
+    }
+    allowed_value: {
+      label: "Rochester"
+      value: "Rochester"
+    }
+    allowed_value: {
+      label: "Chaska"
+      value: "Chaska"
+    }
+  }
+
+  dimension: distance_city_lat {
+# hidden: yes
+  type: number
+  sql: CASE WHEN {% parameter selected_city %} = 'New York' THEN 40.758124
+    WHEN {% parameter selected_city %} = 'Farmingdale' THEN 40.739527
+    WHEN {% parameter selected_city %} = 'Rochester' THEN 43.1130973
+    WHEN {% parameter selected_city %} = 'Chaska' THEN 44.834909
+    ELSE 40.758124 END ;;
+}
+
+
+
+
+
+
+  measure: min_date {
     type: date
-    sql: concat(${TABLE}.year, "-", ${TABLE}.month) ;;
+    sql: min(${TABLE}.created_at) ;;
+    convert_tz: no
+  }
+
+  measure: date_field {
+    type: date
+    sql: max(${TABLE}.created_at) ;;
   }
 
   dimension_group: created_other {
@@ -86,10 +130,9 @@ view: orders {
           END ;;
   }
 
-  dimension: hours_formatted {
+  measure: hours_formatted {
     type: date
-    sql: ${created_raw} ;;
-    html: {{ rendered_value | date: "%X" }} ;;
+    sql: max(${created_raw}) ;;
   }
 
   dimension_group: date_diff {
@@ -109,7 +152,7 @@ view: orders {
 
   measure: avg_duration {
     type: average
-    sql: ${dur_hours} ;;
+    sql: case when ${dur_hours} = 0 then null else ${dur_hours} end ;;
   }
 
   measure: count {

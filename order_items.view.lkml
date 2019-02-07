@@ -19,15 +19,42 @@ view: order_items {
     suggest_dimension: products.category
   }
 
+  parameter: category_parameter {
+  type: number
+  }
+
+
+
+
+  parameter: par {
+    type: number
+    default_value: "1233"
+  }
+
+  dimension: pass_thru {
+    sql: trim({% parameter par %}) ;;
+  }
+
+  dimension: parameter_value {
+   sql: {% if pass_thru._sql == '1233' %} {{pass_thru._sql}} {% else %} '5' {% endif %};;
+  }
+
+  dimension: assign {
+    sql: {%assign test = pass_thru._sql | plus: 0 %}
+{% if test == '1233' %} test
+{% else %}
+5
+{% endif %} ;;
+  }
+
+
+
+
   measure: category_count {
     description: "Use with the Category Count Picker filter-only field"
-    type: sum
+    type: count_distinct
     sql:
-      CASE
-        WHEN {% condition category_count_picker %} ${products.category} {% endcondition %}
-        THEN 1
-        ELSE 0
-      END
+      {% if '1234' == '1233' %} 1 {% else %} 0 {% endif %}
     ;;
   }
 

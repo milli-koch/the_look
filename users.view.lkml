@@ -2,8 +2,9 @@ view: users {
   sql_table_name: demo_db.users ;;
 
   dimension: id {
-#     primary_key: yes
-    type: string
+    primary_key: yes
+    type: number
+    value_format_name: id
     sql: ${TABLE}.id ;;
   }
 
@@ -14,6 +15,13 @@ view: users {
 
   filter: user {
     type: string
+  }
+
+  dimension: age_tier {
+    type: tier
+    tiers: [0, 10, 20, 30, 40, 50, 60, 70, 80]
+    style: classic # the default value, could be excluded
+    sql: ${age} ;;
   }
 
 #   filter: employee_and_customer_location {

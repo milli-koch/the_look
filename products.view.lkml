@@ -15,22 +15,30 @@ view: products {
   }
 
   dimension: category {
+#     label: "red"
+#     group_label: "apples"
     type: string
     sql: ${TABLE}.category ;;
-    html: <a href="https://localhost:9999/dashboards/4?f[products.brand]={{ products.brand._filterable_value }}">{{ value }}</a> ;;
+#     html: <a href="https://localhost:9999/dashboards/4?f[products.brand]={{ products.brand._filterable_value }}">{{ value }}</a> ;;
     }
 
   dimension: department {
+#     label: "green"
+#     group_label: "apples"
     type: string
     sql: ${TABLE}.department ;;
   }
 
   dimension: item_name {
+    label: "red"
+    group_label: "tomatoes"
     type: string
     sql: ${TABLE}.item_name ;;
   }
 
   dimension: rank {
+    label: "green"
+    group_label: "tomatoes"
     type: number
     sql: ${TABLE}.rank ;;
   }
@@ -40,9 +48,31 @@ view: products {
     sql: ${TABLE}.retail_price ;;
   }
 
+  dimension: currency {
+    type: string
+    sql: case when ${retail_price} < 10 then '€' else '$' end ;;
+  }
+
+  measure: dollars {
+    type: average
+    sql: ${retail_price} ;;
+    value_format_name: usd
+  }
+
+  measure: euros {
+    type: average
+    sql: ${retail_price} ;;
+    value_format_name: eur
+  }
   measure: average_retail_price {
     type: average
     sql: ${retail_price} ;;
+    value_format_name: decimal_0
+    drill_fields: [department, category, average_retail_price]
+    link: {
+      label: "drill"
+      url: "{{link}}&pivots=products.department&row_total=right&sorts=products.average_retail_price+desc+2,products.department+0"
+    }
   }
 
   dimension: sku {
@@ -54,5 +84,6 @@ view: products {
   measure: count {
     type: count
     drill_fields: [id, item_name, inventory_items.count]
+    value_format_name: decimal_0
   }
 }
