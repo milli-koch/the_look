@@ -75,8 +75,8 @@ view: order_items {
   measure: count_date_start {
     type: count
     filters: {
-      field: is_date_filter_start
-      value: "yes"
+      field: orders.created_date
+      value: "last week"
     }
   }
 

@@ -14,6 +14,11 @@ datagroup: four_hour_cache {
 
 persist_with: the_look_default_datagroup
 
+access_grant: user_fields {
+  user_attribute: department
+  allowed_values: ["dcl"]
+}
+
 explore: products {
   extends: [products_base]
   hidden: no
