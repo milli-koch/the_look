@@ -7,10 +7,13 @@ view: orders {
     sql: ${TABLE}.id ;;
   }
 
+
+
   dimension_group: created {
     type: time
     timeframes: [
       raw,
+      millisecond500,
       second,
       hour,
       time,
@@ -92,6 +95,7 @@ view: orders {
     type: time
     timeframes: [
       raw,
+      millisecond500,
       time,
       date,
       day_of_week,
@@ -104,7 +108,7 @@ view: orders {
       month_name,
       day_of_year
     ]
-    sql: DATE_ADD(DATE_ADD(DATE_ADD(DATE_ADD(${created_raw}, INTERVAL 3 DAY), INTERVAL 9 HOUR), INTERVAL 35 MINUTE), INTERVAL 46 SECOND) ;;
+    sql: DATE_ADD(DATE_ADD(DATE_ADD(DATE_ADD(DATE_ADD(${created_raw}, INTERVAL 3 DAY), INTERVAL 9 HOUR), INTERVAL 35 MINUTE), INTERVAL 46 SECOND), INTERVAL 60 MICROSECOND) ;;
   }
 
   filter: previous_period_filter {

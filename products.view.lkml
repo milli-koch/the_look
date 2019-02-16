@@ -45,7 +45,14 @@ view: products {
 
   dimension: retail_price {
     type: number
-    sql: ${TABLE}.retail_price ;;
+#     sql: ${TABLE}.retail_price ;;
+    value_format_name: usd
+  }
+
+  measure: total_retail {
+    value_format_name: usd
+    type: sum
+    sql: ${retail_price} ;;
   }
 
   dimension: currency {

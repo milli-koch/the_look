@@ -68,9 +68,9 @@ view: users {
   }
 
   dimension: email {
-    required_access_grants: [user_fields]
     type: string
     sql: ${TABLE}.email ;;
+    tags: ["email"]
   }
 
   dimension: first_name {

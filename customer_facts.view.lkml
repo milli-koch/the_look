@@ -6,8 +6,6 @@ view: customer_facts {
         SUM(sale_price) AS lifetime_spend
       FROM
         order
-      WHERE
-        {% condition order_region %} order.region {% endcondition %}
     ;;
     indexes: ["customer_id"]
     datagroup_trigger: the_look_default_datagroup
