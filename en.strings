@@ -2,10 +2,10 @@
 // e.g. "en_US.strings"
 //
 
-"id" = "Identifiant";
-"brand" = "Marque";
-"category" = "Catégorie";
-"department" = "Département";
+"id" = "ID";
+"brand" = "Brand";
+"category" = "Category";
+"department" = "Department";
 
 // There is one .strings file per locale.
 //
@@ -21,4 +21,4 @@
 // Then, set your LookML label and description parameters to the desired key values.
 //
 // To choose this file as the master key list and as the one to validate against,
-// set its locale code ("fr") as the default_locale in the manifest file.
+// set its locale code ("en") as the default_locale in the manifest file.
