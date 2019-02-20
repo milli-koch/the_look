@@ -7,8 +7,6 @@ view: orders {
     sql: ${TABLE}.id ;;
   }
 
-
-
   dimension_group: created {
     type: time
     timeframes: [
@@ -74,11 +72,6 @@ view: orders {
     WHEN {% parameter selected_city %} = 'Chaska' THEN 44.834909
     ELSE 40.758124 END ;;
 }
-
-
-
-
-
 
   measure: min_date {
     type: date

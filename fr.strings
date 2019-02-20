@@ -1,0 +1,10 @@
+"id" = "Identifiant";
+"brand" = "Marque";
+"category" = "Catégorie";
+"department" = "Département";
+
+//
+// Then, set your LookML label and description parameters to the desired key values.
+//
+// To choose this file as the master key list and as the one to validate against,
+// set its locale code ("fr.string") as the default_locale in the manifest file.

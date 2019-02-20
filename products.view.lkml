@@ -2,12 +2,14 @@ view: products {
   sql_table_name: demo_db.products ;;
 
   dimension: id {
+    label: "id"
     primary_key: yes
     type: number
     sql: ${TABLE}.id ;;
   }
 
   dimension: brand {
+    label: "brand"
     type: string
     sql: ${TABLE}.brand ;;
     html: <a href="/explore/the_look/orders?f[products.category]={{ filterable_value }}">{{ value }}</a> ;;
@@ -15,6 +17,7 @@ view: products {
   }
 
   dimension: category {
+    label: "category"
 #     label: "red"
 #     group_label: "apples"
     type: string
@@ -23,6 +26,7 @@ view: products {
     }
 
   dimension: department {
+    label: "department"
 #     label: "green"
 #     group_label: "apples"
     type: string

@@ -22,6 +22,10 @@ access_grant: user_fields {
 explore: products {
   extends: [products_base]
   hidden: no
+  join: inventory_items {
+    sql_on: ${inventory_items.product_id} =  ${products.id} ;;
+    relationship: one_to_many
+  }
 }
 
 explore: orders {
