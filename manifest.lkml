@@ -1,6 +1,4 @@
-# project_name: "the_look"
-
 localization_settings: {
-  default_locale: en
+  default_locale: en_US
   localization_level: permissive
 }
