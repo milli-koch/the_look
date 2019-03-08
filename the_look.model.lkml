@@ -28,7 +28,26 @@ explore: products {
   }
 }
 
+explore: users {
+  required_access_grants: [user_fields]
+  view_name: users
+  view_label: "Users"
+  label: "User"
+  from: users_ex
+  join: orders {
+    sql_on: ${orders.user_id} = ${users.id} ;;
+    relationship: many_to_one
+  }
+}
+
+explore: accounts {
+  extends: [users]
+}
+
+
 explore: orders {
+  sql_always_where: {% condition orders.date_filter %} ${created_raw} {% endcondition %}
+  and {% condition orders.date_filter %} ${created_other_raw} {% endcondition %};;
 #   persist_with: four_hour_cache
   join: users {
     sql_on: ${orders.user_id} = ${users.id} ;;
@@ -55,21 +74,21 @@ explore: orders {
   }
 }
 
-explore: users {
-  fields: [ALL_FIELDS*, -created_raw]
-  persist_with: four_hour_cache
-
-  join: orders {
-    sql_on: ${users.id} = ${orders.user_id} ;;
-    relationship: one_to_many
-  }
-
-  join: user_data {
-    sql_on: ${user_data.user_id} = ${users.id} ;;
-    relationship: one_to_many
-  }
-
-}
+# explore: users {
+#   fields: [ALL_FIELDS*, -created_raw]
+#   persist_with: four_hour_cache
+#
+#   join: orders {
+#     sql_on: ${users.id} = ${orders.user_id} ;;
+#     relationship: one_to_many
+#   }
+#
+#   join: user_data {
+#     sql_on: ${user_data.user_id} = ${users.id} ;;
+#     relationship: one_to_many
+#   }
+#
+# }
 
 explore: inventory_items {
   label: "Explorename"

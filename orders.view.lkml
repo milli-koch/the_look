@@ -30,18 +30,53 @@ view: orders {
     convert_tz: no
   }
 
+  filter: MTD_filter {
+    type: date
+  }
+
+  dimension: is_before_mtd {
+    type: yesno
+    sql:date_trunc('MONTH' from {% condition MTD_filter %} ${created_date} {% endcondition %}) < {% condition MTD_filter %} ${created_date} {% endcondition %}
+);;
+  }
+
+  dimension_group: created_same {
+    type: time
+    timeframes: [
+      raw,
+      millisecond500,
+      second,
+      hour,
+      time,
+      date,
+      time_of_day,
+      week,
+      month,
+      month_name,
+      day_of_month,
+      quarter,
+      year,
+      day_of_week
+    ]
+    sql: ${created_raw} ;;
+    convert_tz: no
+  }
+
   dimension: tz_date {
     type: date
     sql: ${created_date} ;;
 #     convert_tz: no
   }
 
+  dimension: date_formatted {
+    type: date_time
+    sql: datediff(${created_other_time}, ${created_time}) ;;
+    # value_format: "[hh]:mm:dd"
+  }
+
   filter: date_filter {
     type: date
   }
-
-
-
 
   parameter: selected_city {
     type: string
@@ -72,6 +107,27 @@ view: orders {
     WHEN {% parameter selected_city %} = 'Chaska' THEN 44.834909
     ELSE 40.758124 END ;;
 }
+
+  filter: first_period_filter {
+    group_label: "Arbitrary Period Comparisons"
+    type: date
+  }
+
+  dimension: days_from_start_first {
+    hidden: yes
+    type: number
+    sql: DATEDIFF({% date_start first_period_filter %}, ${created_date}) ;;
+  }
+
+  dimension: days_from_first_period {
+    group_label: "Arbitrary Period Comparisons"
+    type: number
+    sql:
+      CASE
+       WHEN ${days_from_start_first} >= 0
+       THEN ${days_from_start_first}
+      END;;
+  }
 
   measure: min_date {
     type: date
@@ -132,19 +188,27 @@ view: orders {
     sql: max(${created_raw}) ;;
   }
 
+  parameter: date {
+    type: date
+  }
+
+   dimension: days_since_order_dynamic {
+    type: number
+    sql: DATEDIFF({% parameter date %}, ${created_date}) ;;
+  }
+
   dimension_group: date_diff {
     type: duration
-    intervals: [second, minute, hour]
-    sql_start: ${created_other_raw} ;;
-    sql_end:${created_raw} ;;
-    html: {{ rendered_value | date: "%X" }} ;;
-
+    intervals: [day,second, minute, hour]
+    sql_start: ${created_raw} ;;
+    sql_end: curdate() ;;
   }
 
   dimension: dur_hours {
     type: duration_hour
     sql_start: ${created_other_raw} ;;
     sql_end:${created_raw} ;;
+    # value_format: "[hh]:mm:dd"
   }
 
   measure: avg_duration {
@@ -154,8 +218,15 @@ view: orders {
 
   measure: count {
     type: count
+#     required_fields: [created_date]
 #     drill_fields: [id, users.first_name, users.last_name, users.id, order_items.count, date_diff_second]
 #     drill_fields: [seconds_date_diff]
+  }
+
+  measure: running_total {
+    type: running_total
+    sql: ${count} ;;
+    required_fields: [created_date]
   }
 
 #   dimension: created_1hour {

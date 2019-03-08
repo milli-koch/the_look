@@ -1,6 +1,7 @@
 view: users {
   sql_table_name: demo_db.users ;;
 
+
   dimension: id {
     primary_key: yes
     type: number
@@ -42,9 +43,13 @@ view: users {
     sql: ${TABLE}.age ;;
   }
 
+  filter: city_filter {
+    sql:  ARRAY_CONTAINS(TO_VARIANT({% parameter city_filter %}), user_teams) ;;
+  }
+
   dimension: city {
     type: string
-    sql: ${TABLE}.city ;;
+    sql: ${TABLE}.city  ;;
   }
 
   dimension: country {
