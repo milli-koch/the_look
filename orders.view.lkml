@@ -134,12 +134,13 @@ view: orders {
 
   dimension_group: date_diff {
     type: duration
-    intervals: [second, minute, hour]
+    intervals: [second, minute, hour, day]
     sql_start: ${created_other_raw} ;;
     sql_end:${created_raw} ;;
     html: {{ rendered_value | date: "%X" }} ;;
 
   }
+
 
   dimension: dur_hours {
     type: duration_hour

@@ -72,6 +72,24 @@ view: order_items {
     sql: ${orders.created_raw} = {% date_end date_filter %} ;;
   }
 
+  parameter: days_since_install {
+    type: number
+  }
+
+  dimension: is_x_days {
+    type: yesno
+    sql: ${orders.days_date_diff} =  {% parameter days_since_install %} ;;
+  }
+
+#   measure: dynamic_sale_price {
+#     type: number
+#     sql: ${sale_price} ;;
+#     filters: {
+#       field: is_x_days
+#       value: "yes"
+#     }
+#   }
+
   measure: count_date_start {
     type: count
     filters: {
