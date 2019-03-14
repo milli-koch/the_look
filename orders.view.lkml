@@ -204,6 +204,7 @@ view: orders {
     sql_end: curdate() ;;
   }
 
+
   dimension: dur_hours {
     type: duration_hour
     sql_start: ${created_other_raw} ;;
