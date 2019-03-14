@@ -73,11 +73,31 @@ view: orders {
     ELSE 40.758124 END ;;
 }
 
-  measure: min_date {
-    type: date
-    sql: min(${TABLE}.created_at) ;;
-    convert_tz: no
-  }
+parameter: latitude_selector {
+  type: number
+}
+
+parameter: longitude_selector {
+  type: number
+}
+
+dimension: new_york_city {
+  type: location
+  sql_latitude: 40.7128  ;;
+  sql_longitude: 74.0060 ;;
+}
+
+dimension: location {
+  type: location
+  sql_latitude: {% parameter latitude_selector %} ;;
+  sql_longitude: {% parameter longitude_selector %} ;;
+}
+
+  # measure: min_date {
+  #   type: date
+  #   sql: min(${TABLE}.created_at) ;;
+  #   convert_tz: no
+  # }
 
   measure: date_field {
     type: date
