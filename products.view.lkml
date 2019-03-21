@@ -31,7 +31,15 @@ view: products {
 #     group_label: "apples"
     type: string
     sql: ${TABLE}.department ;;
-  }
+#     html: {% if value == 'Men' %}
+#     <p style="color: black; background-color: green; font-size:100%; text-align:center">{{ value }}</p>
+#     {% elsif value == 'Women' %}
+#     <p style="color: black; background-color: blue; font-size:100%; text-align:center">{{ value }}</p>
+#     {% else %}
+#     <p style="color: black; background-color: orange; font-size:100%; text-align:center"></p>
+#     {% endif %}
+#     ;;
+}
 
   dimension: item_name {
     label: "red"

@@ -7,6 +7,23 @@ view: orders {
     sql: ${TABLE}.id ;;
   }
 
+  parameter: mtd {
+    type: date
+  }
+
+  dimension: date_is_mtd {
+    type: yesno
+    sql:
+    date_part('MONTH', ${created_raw}) = date_part('MONTH', {% parameter mtd %}) and
+    date_part('DAY', ${created_raw}) <= date_part('DAY', {% parameter mtd %});;
+  }
+
+  dimension: date {
+    type: date
+    sql: dateadd(day, -1, {% parameter mtd %}) ;;
+    required_access_grants: [user_fields]
+  }
+
   dimension_group: created {
     type: time
     timeframes: [
@@ -40,7 +57,10 @@ view: orders {
     type: date
   }
 
-
+  measure: count_last_year_initiations {
+    label: "{{ \"now\" | date: \"%Y\" | minus: 1}} initiations"
+    type: count
+  }
 
 
   parameter: selected_city {
@@ -72,6 +92,10 @@ view: orders {
     WHEN {% parameter selected_city %} = 'Chaska' THEN 44.834909
     ELSE 40.758124 END ;;
 }
+
+# dimension: user_name {
+#   sql: ${user.name} ;;
+# }
 
 parameter: latitude_selector {
   type: number
@@ -155,9 +179,9 @@ dimension: location {
   dimension_group: date_diff {
     type: duration
     intervals: [second, minute, hour, day]
-    sql_start: ${created_other_raw} ;;
-    sql_end:${created_raw} ;;
-    html: {{ rendered_value | date: "%X" }} ;;
+    sql_start: ${created_raw} ;;
+    sql_end:${created_other_raw} ;;
+    html: <div style="background-color: rgba(200,35,25,{{value}}); font-size:150%; text-align:center">{{ value }}</div> ;;
 
   }
 
@@ -234,12 +258,20 @@ dimension: location {
 
   dimension: is_cancelled {
     type: yesno
-    sql: ${statuz} = "cancelled" ;;
+    sql: ${status} = "cancelled" ;;
   }
 
-  dimension: statuz {
+  dimension: status {
     type: string
     sql: ${TABLE}.status ;;
+    html: {% if value == 'complete' %}
+    <p style="color: black; background-color: lightblue; font-size:100%; text-align:center">{{ value }}</p>
+    {% elsif value == 'pending' %}
+    <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center">{{ value }}</p>
+    {% else %}
+    <p style="color: black; background-color: orange; font-size:100%; text-align:center">{{ value }}</p>
+    {% endif %}
+    ;;
   }
 
   dimension: user_id {
@@ -263,6 +295,10 @@ dimension: location {
     type: sum
     sql: ${dividing} ;;
     value_format_name: percent_2
+    filters: {
+      field: created_date
+      value: "last month"
+    }
   }
 
   measure: user_id_list {
@@ -270,12 +306,12 @@ dimension: location {
     list_field: user_id
   }
 
-  measure: count_filtered {
+  measure: count_mtd {
     type: count
     drill_fields: [id, created_day_of_week, created_date]
     filters: {
-      field: created_date
-      value: "before tomorrow"
+      field: mtd
+      value: "yes"
     }
   }
 

@@ -141,7 +141,9 @@ view: order_items {
 
   measure: total_sale_price {
     type: sum
-    sql: ${sale_price} ;;
+    sql: ${TABLE}.sale_price ;;
+    value_format: "$0.0,,\" M\""
+
   }
 
   measure: percent_of_total {
@@ -164,6 +166,8 @@ view: order_items {
 
   measure: count {
     type: count
+    value_format: "$0.0,,\" M\""
+
 #     drill_fields: [ inventory_items.id, orders.id]
 #     sql: case when ${returned_date} < "2018-07-01" then null else count(*) end ;;
   }

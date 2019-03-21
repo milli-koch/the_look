@@ -19,6 +19,8 @@ access_grant: user_fields {
   allowed_values: ["dcl"]
 }
 
+explore: pdt_with_a_really_really_long_name_for_bug_reproduction_purposes {}
+
 explore: products {
   extends: [products_base]
   hidden: no
@@ -28,8 +30,17 @@ explore: products {
   }
 }
 
+explore: user {
+  from: users_ex
+  view_name: users
+}
+
+explore: accounts {
+  extends: [user]
+}
+
 explore: orders {
-#   persist_with: four_hour_cache
+  persist_with: the_look_default_datagroup
   join: users {
     sql_on: ${orders.user_id} = ${users.id} ;;
     type: left_outer
