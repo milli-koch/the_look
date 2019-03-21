@@ -1,11 +1,10 @@
-include: "users.view"
+
+include: "*.view"
 
 view: users_ex {
- extends: [users]
+extends: [users]
 
-
-dimension: first_name {
-  type: string
-  sql: ${TABLE}.first_name ;;
+dimension: age {
+  label: "age 2"
 }
 }
