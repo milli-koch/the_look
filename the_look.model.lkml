@@ -2,6 +2,7 @@ connection: "thelook"
 
 include: "*.view"
 include: "products.explore.lkml"
+# include: "//schema/manifest.lkml"
 
 datagroup: the_look_default_datagroup {
   sql_trigger: SELECT MAX(id) FROM orders;;
@@ -30,7 +31,7 @@ explore: products {
   }
 }
 
-explore: users {
+explore: user {
   required_access_grants: [user_fields]
   view_name: users
   view_label: "Users"
@@ -43,7 +44,7 @@ explore: users {
 }
 
 explore: accounts {
-  extends: [users]
+  extends: [user]
 }
 
 explore: orders {

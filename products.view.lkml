@@ -21,7 +21,14 @@ view: products {
 #     label: "red"
 #     group_label: "apples"
     type: string
-    sql: ${TABLE}.category ;;
+    sql: case when ${TABLE}.category IN("jeans", "pants") then "pants" else "other" end ;;
+    # case: {
+    #   when: {
+    #     sql: ${TABLE}.category IN("jeans", "pants" ;;
+    #     label: "pants"
+    #   }
+    #   else: "other"
+    # }
 #     order_by_field: count
 #     html: <a href="https://localhost:9999/dashboards/4?f[products.brand]={{ products.brand._filterable_value }}">{{ value }}</a> ;;
     }

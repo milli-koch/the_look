@@ -5,7 +5,5 @@ view: pdt_with_a_really_really_long_name_for_bug_reproduction_purposes {
   indexes: ["id"]
  }
 
-
-
 dimension: id {}
 }

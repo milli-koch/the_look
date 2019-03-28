@@ -21,6 +21,8 @@ view: users {
 
   filter: user {
     type: string
+    suggest_explore: orders
+    suggest_dimension: name
   }
 
   dimension: age_tier {
@@ -79,7 +81,7 @@ view: users {
   }
 
   dimension: first_name {
-    required_access_grants: [user_fields]
+    # required_access_grants: [user_fields]
     type: string
     sql: ${TABLE}.first_name ;;
     html: <b><center>{{value}}</center></b> ;;
@@ -103,6 +105,7 @@ view: users {
   dimension: state {
     type: string
     sql: ${TABLE}.state ;;
+    map_layer_name: us_states
   }
 
   dimension: zip {
