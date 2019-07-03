@@ -7,11 +7,99 @@ view: orders {
     sql: ${TABLE}.id ;;
   }
 
+  measure: math {
+    type: number
+    sql: ${users.id} * ${count};;
+  }
+
+  parameter: mtd {
+    type: date
+  }
+
+  dimension: Drill_to_State{
+    label: "Drill to State"
+    sql: 'Drill to State' ;;
+#       link: {
+#       link: {
+#         label: "Drill to State"
+##     url: "https://sandbox-lookerbi.corelogic.net/dashboards/306?Customer_ID={{ _filters['lu_cust_vk.CustomerID'] | url_encode }}"
+##      icon_url: "https://looker.com/favicon.ico"
+##        url:"https://sandbox-lookerbi.corelogic.net/dashboards/306?Customer_ID={{ _filters['Customer.Customer_id_filter'] | url_encode }}"
+#         url:"./306?Customer_ID={{ _filters['Customer.Customer_id_filter'] | url_encode }}"
+#         }
+##        url:"/dashboards/306?Customer_ID={{ _filters['Customer.Customer_id_filter'] | url_encode }}"  }
+##    html: <font size="10" color="#000000">{{rendered_value}} ;;
+      html:
+      {% if _user_attributes['sw_embed_domain'] | size > 0 %}
+        <a href="/embed/dashboards/306?Customer={{ _filters['Customer.Customer_id_filter'] | url_encode }}
+        {% if _user_attributes['sw_embed_domain'] | size > 0 %}&embed_domain={{ _user_attributes['sw_embed_domain'] }}
+        {% endif %}" target="_blank">Drill to State</a>
+      {% else%}
+        <a href="/dashboards/306?Customer={{ _filters['Customer.Customer_id_filter'] | url_encode }}
+        {% if _user_attributes['sw_embed_domain'] | size > 0 %}&embed_domain={{ _user_attributes['sw_embed_domain'] }}
+        {% endif %}" target="_blank">Drill to State</a>
+      {% endif %}
+      ;;
+      }
+
+  dimension: date_is_mtd {
+    type: yesno
+    sql:
+    date_part('MONTH', ${created_raw}) = date_part('MONTH', {% parameter mtd %}) and
+    date_part('DAY', ${created_raw}) <= date_part('DAY', {% parameter mtd %});;
+  }
+
+  dimension: date {
+    type: date
+    sql: dateadd(day, -1, {% parameter mtd %}) ;;
+    required_access_grants: [user_fields]
+  }
+
   dimension_group: created {
     type: time
-    # label: "Created Date"
     timeframes: [
       raw,
+      millisecond500,
+      second,
+      hour,
+      time,
+      date,
+      time_of_day,
+      week,
+      month,
+      month_name,
+      day_of_month,
+      quarter,
+      year,
+      day_of_week,
+      week_of_year,
+      month_num
+    ]
+    sql: ${TABLE}.created_at ;;
+#     datatype: date
+    convert_tz: no
+  }
+
+  dimension: month {
+    type: date_month_num
+    sql: ${created_week_of_year} ;;
+  }
+
+  filter: MTD_filter {
+    type: date
+  }
+
+  dimension: is_before_mtd {
+    type: yesno
+    sql:date_trunc('MONTH' from {% condition MTD_filter %} ${created_date} {% endcondition %}) < {% condition MTD_filter %} ${created_date} {% endcondition %}
+);;
+  }
+
+  dimension_group: created_same {
+    type: time
+    timeframes: [
+      raw,
+      millisecond500,
       second,
       hour,
       time,
@@ -25,14 +113,117 @@ view: orders {
       year,
       day_of_week
     ]
-    sql: ${TABLE}.created_at ;;
+    sql: ${created_raw} ;;
     convert_tz: no
   }
 
-  dimension_group: created_other_date{
+  dimension: tz_date {
+    type: date
+    sql: ${created_date} ;;
+#     convert_tz: no
+  }
+
+  dimension: date_formatted {
+    type: date_time
+    sql: datediff(${created_other_time}, ${created_time}) ;;
+    # value_format: "[hh]:mm:dd"
+  }
+
+  filter: date_filter {
+    type: date
+  }
+
+  parameter: selected_city {
+    type: string
+    allowed_value: {
+      label: "New York"
+      value: "New York"
+    }
+    allowed_value: {
+      label: "Farmingdale"
+      value: "Farmingdale"
+    }
+    allowed_value: {
+      label: "Rochester"
+      value: "Rochester"
+    }
+    allowed_value: {
+      label: "Chaska"
+      value: "Chaska"
+    }
+  }
+
+  dimension: distance_city_lat {
+# hidden: yes
+  type: number
+  sql: CASE WHEN {% parameter selected_city %} = 'New York' THEN 40.758124
+    WHEN {% parameter selected_city %} = 'Farmingdale' THEN 40.739527
+    WHEN {% parameter selected_city %} = 'Rochester' THEN 43.1130973
+    WHEN {% parameter selected_city %} = 'Chaska' THEN 44.834909
+    ELSE 40.758124 END ;;
+}
+
+  filter: first_period_filter {
+    group_label: "Arbitrary Period Comparisons"
+    type: date
+  }
+
+  dimension: days_from_start_first {
+    hidden: yes
+    type: number
+    sql: DATEDIFF({% date_start first_period_filter %}, ${created_date}) ;;
+  }
+
+  dimension: days_from_first_period {
+    group_label: "Arbitrary Period Comparisons"
+    type: number
+    sql:
+      CASE
+       WHEN ${days_from_start_first} >= 0
+       THEN ${days_from_start_first}
+      END;;
+  }
+
+# dimension: user_name {
+#   sql: ${user.name} ;;
+# }
+
+parameter: latitude_selector {
+  type: number
+}
+
+parameter: longitude_selector {
+  type: number
+}
+
+dimension: new_york_city {
+  type: location
+  sql_latitude: 40.7128  ;;
+  sql_longitude: 74.0060 ;;
+}
+
+dimension: location {
+  type: location
+  sql_latitude: {% parameter latitude_selector %} ;;
+  sql_longitude: {% parameter longitude_selector %} ;;
+}
+
+  # measure: min_date {
+  #   type: date
+  #   sql: min(${TABLE}.created_at) ;;
+  #   convert_tz: no
+  # }
+
+  measure: date_field {
+    type: date
+    sql: max(${TABLE}.created_at) ;;
+  }
+
+  dimension_group: created_other {
     type: time
     timeframes: [
       raw,
+      millisecond500,
       time,
       date,
       day_of_week,
@@ -45,7 +236,7 @@ view: orders {
       month_name,
       day_of_year
     ]
-    sql: DATE_ADD(DATE_ADD(DATE_ADD(DATE_ADD(${created_raw}, INTERVAL 3 DAY), INTERVAL 9 HOUR), INTERVAL 35 MINUTE), INTERVAL 46 SECOND) ;;
+    sql: DATE_ADD(DATE_ADD(DATE_ADD(DATE_ADD(DATE_ADD(${created_raw}, INTERVAL 3 DAY), INTERVAL 9 HOUR), INTERVAL 35 MINUTE), INTERVAL 46 SECOND), INTERVAL 60 MICROSECOND) ;;
   }
 
   filter: previous_period_filter {
@@ -71,38 +262,43 @@ view: orders {
           END ;;
   }
 
-  filter: date_filter {
+  measure: hours_formatted {
     type: date
+    sql: max(${created_raw}) ;;
   }
-
-#   dimension: hours_formatted {
-#     type: date
-#     sql: ${created_raw} ;;
-#     html: {{ rendered_value | date: "%X" }} ;;
-#   }
 
   dimension_group: date_diff {
     type: duration
-    intervals: [second, minute, hour]
-    sql_start: ${created_other_date_raw} ;;
-    sql_end:${created_raw} ;;
+    intervals: [second, minute, hour, day]
+    sql_start: ${created_raw} ;;
+    sql_end:${created_other_raw} ;;
+    html: <div style="background-color: rgba(200,35,25,{{value}}); font-size:150%; text-align:center">{{ value }}</div> ;;
   }
+
 
   dimension: dur_hours {
     type: duration_hour
-    sql_start: ${created_other_date_raw} ;;
+    sql_start: ${created_other_raw} ;;
     sql_end:${created_raw} ;;
+    # value_format: "[hh]:mm:dd"
   }
 
   measure: avg_duration {
     type: average
-    sql: ${dur_hours} ;;
+    sql: case when ${dur_hours} = 0 then null else ${dur_hours} end ;;
   }
 
   measure: count {
     type: count
+#     required_fields: [created_date]
 #     drill_fields: [id, users.first_name, users.last_name, users.id, order_items.count, date_diff_second]
 #     drill_fields: [seconds_date_diff]
+  }
+
+  measure: running_total {
+    type: running_total
+    sql: ${count} ;;
+    required_fields: [created_date]
   }
 
 #   dimension: created_1hour {
@@ -160,13 +356,20 @@ view: orders {
 
   dimension: is_cancelled {
     type: yesno
-    sql: ${statuz} = "cancelled" ;;
+    sql: ${status} = "cancelled" ;;
   }
 
-
-  dimension: statuz {
+  dimension: status {
     type: string
     sql: ${TABLE}.status ;;
+    html: {% if value == 'complete' %}
+    <p style="color: black; background-color: lightblue; font-size:100%; text-align:center">{{ value }}</p>
+    {% elsif value == 'pending' %}
+    <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center">{{ value }}</p>
+    {% else %}
+    <p style="color: black; background-color: orange; font-size:100%; text-align:center">{{ value }}</p>
+    {% endif %}
+    ;;
   }
 
   dimension: user_id {
@@ -190,6 +393,10 @@ view: orders {
     type: sum
     sql: ${dividing} ;;
     value_format_name: percent_2
+    filters: {
+      field: created_date
+      value: "last month"
+    }
   }
 
   measure: user_id_list {
@@ -197,12 +404,12 @@ view: orders {
     list_field: user_id
   }
 
-  measure: count_filtered {
+  measure: count_mtd {
     type: count
     drill_fields: [id, created_day_of_week, created_date]
     filters: {
-      field: created_date
-      value: "before tomorrow"
+      field: mtd
+      value: "yes"
     }
   }
 
