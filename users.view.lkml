@@ -1,15 +1,32 @@
 view: users {
-  sql_table_name: demo_db.users ;;
+  sql_table_name: demo_db.{% parameter table_name %} ;;
+#   sql_table_name: demo_db.users ;;
+
+
+  parameter: table_name {
+    type: unquoted
+    default_value: "users"
+    allowed_value: {
+      value: "users"
+      label: "Users"
+    }
+    allowed_value: {
+      value: "orders"
+      label: "Orders"
+    }
+  }
 
 
   dimension: id {
     primary_key: yes
     type: number
     value_format_name: id
+    skip_drill_filter: yes
     sql: ${TABLE}.id ;;
   }
 
   dimension: name {
+    view_label: "label"
     type: string
     sql: concat(${first_name}, " ", ${last_name}) ;;
     link: {
@@ -110,7 +127,8 @@ view: users {
 
   dimension: zip {
     type: zipcode
-    sql: ${TABLE}.zip ;;
+    map_layer_name: us_zipcode_tabulation_areas
+    sql: LPAD(${TABLE}.zip, 5, "0") ;;
   }
 
   measure: count {
@@ -136,12 +154,12 @@ view: users {
   set: detail {
     fields: [
       order_items.returned,
-      order_items.sale_price,
-      order_items.count,
-      id,
-      first_name,
-      last_name,
-      orders.count,
+#       order_items.sale_price,
+#       order_items.count,
+#       id,
+#       first_name,
+#       last_name,
+      orders.count
     ]
   }
 }

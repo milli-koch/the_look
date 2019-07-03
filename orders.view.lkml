@@ -1,19 +1,42 @@
 view: orders {
   sql_table_name: demo_db.orders ;;
+#   sql_table_name: demo_db.users ;;
 
   dimension: id {
     primary_key: yes
-    type: number
-    sql: ${TABLE}.id ;;
+    type: string
+    sql: -- my name is {{ _user_attributes['name'] }}
+    ${TABLE}.id ;;
   }
+
+
+  measure: list {
+    type: list
+    list_field: id
+    html: <span style="white-space: pre;"> {{ value }} </span> ;;
+  }
+
+#   measure: list_2 {
+#     type: string
+#     sql: list(${id}) ;;
+#   }
 
   measure: math {
     type: number
     sql: ${users.id} * ${count};;
+    html: <span style="white-space: pre;"> value </span> ;;
+
+  }
+
+  dimension: timezone {
+    label: "What Time Is It Right Now"
+    sql: current_timestamp;;
+    html: {{value}} {{ _query._query_timezone }} ;;
   }
 
   parameter: mtd {
-    type: date
+    type: string
+    suggest_dimension: id
   }
 
   dimension: Drill_to_State{
@@ -75,6 +98,7 @@ view: orders {
       week_of_year,
       month_num
     ]
+#     sql: CONVERT_TZ ('UTC', 'America/Los_Angeles', ${TABLE}.created_at) ;;
     sql: ${TABLE}.created_at ;;
 #     datatype: date
     convert_tz: no
@@ -82,6 +106,9 @@ view: orders {
 
   dimension: month {
     type: date_month_num
+    html: <p style="font-size:30px"> {{value}} </p> ;;
+#     html: <p style="font-size:30px"> {{variant_list}} </p>;;
+
     sql: ${created_week_of_year} ;;
   }
 
@@ -202,11 +229,11 @@ dimension: new_york_city {
   sql_longitude: 74.0060 ;;
 }
 
-dimension: location {
-  type: location
-  sql_latitude: {% parameter latitude_selector %} ;;
-  sql_longitude: {% parameter longitude_selector %} ;;
-}
+# dimension: location {
+#   type: location
+#   sql_latitude: {% parameter latitude_selector %} ;;
+#   sql_longitude: {% parameter longitude_selector %} ;;
+# }
 
   # measure: min_date {
   #   type: date
@@ -293,6 +320,10 @@ dimension: location {
 #     required_fields: [created_date]
 #     drill_fields: [id, users.first_name, users.last_name, users.id, order_items.count, date_diff_second]
 #     drill_fields: [seconds_date_diff]
+#   filters: {
+#     field: created_date
+#     value: "7 days"
+#   }
   }
 
   measure: running_total {
@@ -354,10 +385,27 @@ dimension: location {
     sql: ${id} ;;
   }
 
-  dimension: is_cancelled {
+  filter: is_cancelled {
     type: yesno
     sql: ${status} = "cancelled" ;;
   }
+
+  dimension: cancelled {
+    type: yesno
+    sql: ${status} = "cancelled" ;;
+  }
+
+
+
+#   dimension: cancelled_boolean {
+#     type: number
+#     sql: ${is_cancelled::number} ;;
+#   }
+#
+  measure: sum_cancelled {
+    type: sum
+    sql: ${is_cancelled::boolean} ;;
+    }
 
   dimension: status {
     type: string

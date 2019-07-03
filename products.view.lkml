@@ -17,10 +17,11 @@ view: products {
   }
 
   dimension: category {
-    label: "category"
+#     label: "category"
 #     label: "red"
 #     group_label: "apples"
     type: string
+#     sql: ${TABLE}.category ;;
     sql: case when ${TABLE}.category IN("jeans", "pants") then "pants" else "other" end ;;
     # case: {
     #   when: {
@@ -111,6 +112,7 @@ view: products {
   measure: count {
     type: count
     drill_fields: [id, item_name, inventory_items.count]
+    link: {label: "drill" url: "{{link}}&total=on"}
     value_format_name: decimal_0
   }
 }

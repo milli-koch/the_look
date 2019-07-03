@@ -20,7 +20,7 @@ access_grant: user_fields {
   allowed_values: ["dcl"]
 }
 
-explore: pdt_with_a_really_really_long_name_for_bug_reproduction_purposes {}
+explore: users {}
 
 explore: products {
   extends: [products_base]
@@ -49,10 +49,11 @@ explore: accounts {
 
 explore: orders {
 
-  sql_always_where: {% condition orders.date_filter %} ${created_raw} {% endcondition %}
-  and {% condition orders.date_filter %} ${created_other_raw} {% endcondition %};;
+#   sql_always_where: {% condition orders.date_filter %} ${created_raw} {% endcondition %}
+#   and {% condition orders.date_filter %} ${created_other_raw} {% endcondition %};;
 #   persist_with: four_hour_cache
   join: users {
+#     fields: []
     sql_on: ${orders.user_id} = ${users.id} ;;
     type: left_outer
     relationship: many_to_one
@@ -131,3 +132,5 @@ join: users {
 }
 
 explore: customer_facts {}
+
+explore: csv_to_sql_query {}

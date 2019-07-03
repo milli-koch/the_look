@@ -9,8 +9,9 @@ view: order_items {
 
   dimension: inventory_item_id {
     type: number
+#     label: "{% _view._name.inventory_id %}"
     sql: ${TABLE}.inventory_item_id ;;
-    html: <a target="new" href="/looks/26">{{ value }}</a>;;
+#     html: <a target="new" href="/looks/26">{{ value }}</a>;;
   }
 
   filter: category_count_picker {
@@ -21,6 +22,7 @@ view: order_items {
 
   parameter: category_parameter {
   type: number
+  default_value: "12"
   }
 
 
@@ -78,7 +80,8 @@ view: order_items {
 
   dimension: is_x_days {
     type: yesno
-    sql: ${orders.days_date_diff} =  {% parameter days_since_install %} ;;
+#     sql: ${orders.days_date_diff} =  {% parameter days_since_install %} ;;
+#     sql: ${orders.days_date_diff} = {{ _filters['orders.id'] }};;
   }
 
 #   measure: dynamic_sale_price {
@@ -142,7 +145,7 @@ view: order_items {
   measure: total_sale_price {
     type: sum
     sql: ${TABLE}.sale_price ;;
-    value_format: "$0.0,,\" M\""
+#     value_format_name: usd_0
 
   }
 
@@ -166,11 +169,12 @@ view: order_items {
 
   measure: count {
     type: count
-    value_format: "$0.0,,\" M\""
+#     value_format: "$0.0,,\" M\""
 
 #     drill_fields: [ inventory_items.id, orders.id]
 #     sql: case when ${returned_date} < "2018-07-01" then null else count(*) end ;;
   }
+
 
   parameter: metric_selector {
     type: string
@@ -181,11 +185,21 @@ view: order_items {
     }
     allowed_value: {
       label: "Returning Shopper Revenue"
-      value: "total_returning_shopper_revenue"
+      value: "returning_shopper_revenue"
     }
   }
 
+  dimension: suggest_param {
+    sql: {% parameter metric_selector %} ;;
+  }
+
+  filter: metric_2 {
+    type: string
+    suggest_dimension: suggest_param
+  }
+
   filter: metric {
+#     label: "{{ parameter metric_selector }}"
     type: number
     sql:
       CASE
