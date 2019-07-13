@@ -62,24 +62,24 @@ view: order_items {
     type: date
   }
 
-  dimension: is_date_filter_start {
-    type: yesno
-    sql: ${orders.created_raw} = {% date_start date_filter %} ;;
-  }
+  # dimension: is_date_filter_start {
+  #   type: yesno
+  #   sql: ${orders.created_raw} = {% date_start date_filter %} ;;
+  # }
 
-  dimension: is_date_filter_end {
-    type: yesno
-    sql: ${orders.created_raw} = {% date_end date_filter %} ;;
-  }
+  # dimension: is_date_filter_end {
+  #   type: yesno
+  #   sql: ${orders.created_raw} = {% date_end date_filter %} ;;
+  # }
 
   parameter: days_since_install {
     type: number
   }
 
-  dimension: is_x_days {
-    type: yesno
-    sql: ${orders.days_date_diff} =  {% parameter days_since_install %} ;;
-  }
+  # dimension: is_x_days {
+  #   type: yesno
+  #   sql: ${orders.days_date_diff} =  {% parameter days_since_install %} ;;
+  # }
 
 #   measure: dynamic_sale_price {
 #     type: number
@@ -90,21 +90,21 @@ view: order_items {
 #     }
 #   }
 
-  measure: count_date_start {
-    type: count
-    filters: {
-      field: orders.created_date
-      value: "last week"
-    }
-  }
+  # measure: count_date_start {
+  #   type: count
+  #   filters: {
+  #     field: orders.created_date
+  #     value: "last week"
+  #   }
+  # }
 
-  measure: count_date_end {
-    type: count
-    filters: {
-      field: is_date_filter_end
-      value: "yes"
-    }
-  }
+  # measure: count_date_end {
+  #   type: count
+  #   filters: {
+  #     field: is_date_filter_end
+  #     value: "yes"
+  #   }
+  # }
 
   dimension: order_id {
     type: number

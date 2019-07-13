@@ -1,5 +1,25 @@
 view: users {
-  sql_table_name: demo_db.users ;;
+  sql_table_name: dbo.users ;;
+
+  dimension: display_text {
+    type: string
+    html:
+        Date: {{ _filters['users.created_date'] }};;
+    #   <br>
+    #   {% if _filters['users.state'] == "" %}
+    #     Brand:Any Value
+    #   {% else %}
+    #   {{ _filters['users.state'] }}
+    #   {% endif %}
+    # <br>
+    # {% if _filters['users.country'] == "" %}
+    #     Country: Any Value
+    # {% else %}
+    #   {{ _filters['users.country'] }}
+    #   {% endif %}
+    #   ;;
+    sql: ${id} ;;
+  }
 
 
   dimension: id {

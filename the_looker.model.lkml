@@ -32,7 +32,8 @@ explore: products {
 }
 
 explore: user {
-  required_access_grants: [user_fields]
+#   required_access_grants: [user_fields]
+
   view_name: users
   view_label: "Users"
   label: "User"
@@ -48,6 +49,10 @@ explore: accounts {
 }
 
 explore: orders {
+  access_filter: {
+    field: users.age
+    user_attribute: age_advanced
+  }
 
   sql_always_where: {% condition orders.date_filter %} ${created_raw} {% endcondition %}
   and {% condition orders.date_filter %} ${created_other_raw} {% endcondition %};;

@@ -16,6 +16,7 @@ view: orders {
     type: date
   }
 
+
   dimension: Drill_to_State{
     label: "Drill to State"
     sql: 'Drill to State' ;;
@@ -52,7 +53,7 @@ view: orders {
   dimension: date {
     type: date
     sql: dateadd(day, -1, {% parameter mtd %}) ;;
-    required_access_grants: [user_fields]
+#     required_access_grants: [user_fields]
   }
 
   dimension_group: created {
