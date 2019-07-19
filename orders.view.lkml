@@ -41,4 +41,8 @@ view: orders {
     type: date
     sql: ${TABLE}.created_at ;;
   }
+  measure: wierd_date {
+    type: number
+    sql: MAX(${TABLE}.created_at) ;;
+  }
 }
