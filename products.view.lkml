@@ -12,24 +12,31 @@ view: products {
     sql: ${TABLE}.brand ;;
   }
 
-  dimension: category {
+  dimension: value {
     type: string
+    hidden: yes
     sql: ${TABLE}.category ;;
   }
 
-  dimension: department {
+  dimension: unnested_value {
     type: string
+    hidden: yes
     sql: ${TABLE}.department ;;
   }
 
-  dimension: item_name {
+  dimension: task_type {
     type: string
     sql: ${TABLE}.item_name ;;
   }
 
-  dimension: rank {
+  dimension: task_response_value_decimal {
     type: number
     sql: ${TABLE}.rank ;;
+  }
+
+  dimension: task_response_value {
+    type: string
+    sql: COALESCE(CAST(${task_response_value_decimal} AS CHAR), ${unnested_value}, ${value}) ;;
   }
 
   dimension: retail_price {
@@ -44,6 +51,10 @@ view: products {
 
   measure: count {
     type: count
-    drill_fields: [id, item_name, inventory_items.count]
+    drill_fields: [id, inventory_items.count]
+  }
+  measure: task_response_value_measure {
+    type: string
+    sql: MAX(${task_response_value}) ;;
   }
 }
