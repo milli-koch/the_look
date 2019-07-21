@@ -38,6 +38,14 @@ view: order_items {
     sql: ${TABLE}.sale_price ;;
   }
 
+  measure: returned_count {
+    type: count
+    filters: {
+      field: returned_date
+      value: "Not Null"
+    }
+    }
+
   measure: count {
     type: count
     drill_fields: [id, orders.id, inventory_items.id]
