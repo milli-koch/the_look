@@ -12,7 +12,7 @@ view: events {
     timeframes: [
       raw,
       time,
-      date,
+      # date,
       week,
       month,
       quarter,
