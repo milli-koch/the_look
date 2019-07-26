@@ -1,10 +1,8 @@
 view: users {
   sql_table_name: demo_db.{% parameter table_name %} ;;
-#   sql_table_name: demo_db.users ;;
-
 
   parameter: table_name {
-    type: unquoted
+    type: number
     default_value: "users"
     allowed_value: {
       value: "users"
@@ -14,14 +12,42 @@ view: users {
       value: "orders"
       label: "Orders"
     }
+    allowed_value: {
+      value: "pdt"
+      label: "PDT"
+    }
   }
+
+#   derived_table:{
+#   sql:
+# {% assign var1 = products.table_name._parameter_value | times: 1 %}
+#
+# {% if var1 > 0 %}
+#     select
+#     id
+#     from demo_db.users us
+#     where us.id = {% parameter products.id_param %}
+#     {% else %}
+#     SELECT
+#     us.id
+#     from demo_db.users us
+#     {% endif %}
+#   ;;
+
+#     sql:
+#     {% assign var1 = products.table_name._parameter_value | times: 1 %}
+#     {% if var1 >0 %}
+#     select * from demo_db.users
+#     {% endif %}
+# ;;
+# }
 
 
   dimension: id {
     primary_key: yes
     type: number
     value_format_name: id
-    skip_drill_filter: yes
+    skip_drill_filter: no
     sql: ${TABLE}.id ;;
   }
 
@@ -123,6 +149,14 @@ view: users {
     type: string
     sql: ${TABLE}.state ;;
     map_layer_name: us_states
+  }
+
+  measure: small_states {
+    type: count
+    filters: {
+      field: state
+      value: "-California, -Texas,-null"
+    }
   }
 
   dimension: zip {

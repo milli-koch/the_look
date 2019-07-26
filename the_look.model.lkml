@@ -5,7 +5,7 @@ include: "products.explore.lkml"
 # include: "//schema/manifest.lkml"
 
 datagroup: the_look_default_datagroup {
-  sql_trigger: SELECT MAX(id) FROM orders;;
+  sql_trigger:  SELECT MAX(id) FROM orders;;
   max_cache_age: "24 hours"
 }
 

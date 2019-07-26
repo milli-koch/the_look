@@ -16,13 +16,20 @@ view: products {
 #     url: "https://looker.farfetch.net/dashboards/934?Experiment%20Name={{ experiment_name._value | url_encode }}&Metric={{metric_dashboard_name._filterable_value}}&Deep%20Dive%20Dimension={{dashboard_deep_dive_dimension._filterable_value}}&Deep%20Dive%20Value={{deep_dive_value._filterable_value}}"
   }
 
+  parameter: id_param {
+    type: number
+  }
+
+
   dimension: category {
 #     label: "category"
 #     label: "red"
 #     group_label: "apples"
     type: string
 #     sql: ${TABLE}.category ;;
-    sql: case when ${TABLE}.category IN("jeans", "pants") then "pants" else "other" end ;;
+    sql: case when ${TABLE}.category IN("jeans", "pants")
+    then "pants"
+    else ${TABLE}.category end ;;
     # case: {
     #   when: {
     #     sql: ${TABLE}.category IN("jeans", "pants" ;;

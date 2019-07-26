@@ -3,11 +3,14 @@ view: orders {
 #   sql_table_name: demo_db.users ;;
 
   dimension: id {
-    primary_key: yes
+    primary_key: no
     type: string
-    sql: -- my name is {{ _user_attributes['name'] }}
-    ${TABLE}.id ;;
-  }
+    sql: ${TABLE}.id ;;
+    }
+
+#     sql: -- my name is {{ _user_attributes['name'] }}
+#     ${TABLE}.id ;;
+#   }
 
 
   measure: list {
@@ -32,6 +35,13 @@ view: orders {
     label: "What Time Is It Right Now"
     sql: current_timestamp;;
     html: {{value}} {{ _query._query_timezone }} ;;
+  }
+
+  dimension: days_ago {
+    type: duration_day
+    sql_start: ${created_date} ;;
+    sql_end: current_timestamp ;;
+    html: {{ value }} days ago ;;
   }
 
   parameter: mtd {
@@ -76,6 +86,70 @@ view: orders {
     type: date
     sql: dateadd(day, -1, {% parameter mtd %}) ;;
     required_access_grants: [user_fields]
+  }
+
+  parameter: date_value {
+    type: date
+  }
+
+  dimension: date_filter_value {
+#     sql: 1 ;;
+    sql: concat(date_format({% date_start created_date %}, '%b %e %Y'), " to ", date_format({% date_end created_date %}, '%b %e %Y')) ;;
+  }
+
+  dimension: date_expression {
+    sql: 1;;
+    html: Date is {{ _filters['orders.created_date'] }} ;;
+  }
+
+  parameter: date_input {
+    type: date
+  }
+
+  parameter: brand_input {
+    type: string
+    default_value: "Any"
+    suggest_dimension: products.brand
+  }
+
+  parameter: country_input {
+    type: unquoted
+    default_value: "Any"
+    suggest_dimension: users.country
+  }
+#
+#   dimension: date_start_input {
+#     hidden: yes
+#     sql: {% date_start date_input %} ;;
+#     type: date
+#   }
+#
+#   dimension: date_end_input {
+#     hidden: yes
+#     sql: {% date_end date_input %} ;;
+#     type: date
+#   }
+
+  dimension: display_text {
+    html: Date: {% if _filters['orders.created_date'] == "" %}
+          Any Value
+          {% else %}
+          {{ _filters['orders.created_date'] }}
+          {% endif %}
+          <br>
+          Brand: {% if _filters['products.brand'] == "" %}
+          Any Value
+          {% else %}
+          {{ _filters['products.brand'] }}
+          {% endif %}
+          <br>
+          Country: {% if _filters['users.country'] == "" %}
+          Any Value
+          {% else %}
+          {{ _filters['users.country'] }}
+          {% endif %}
+          ;;
+    sql: 1 ;;
   }
 
   dimension_group: created {
@@ -241,9 +315,14 @@ dimension: new_york_city {
   #   convert_tz: no
   # }
 
-  measure: date_field {
+  measure: max_date {
     type: date
     sql: max(${TABLE}.created_at) ;;
+    drill_fields: [tiimeframes*]
+  }
+
+  set: tiimeframes {
+    fields: [created_week, created_date, created_hour]
   }
 
   dimension_group: created_other {
@@ -311,9 +390,35 @@ dimension: new_york_city {
   }
 
   measure: avg_duration {
-    type: average
+    type: time
     sql: case when ${dur_hours} = 0 then null else ${dur_hours} end ;;
   }
+
+  measure: max_po_date {
+    label: "Max Purchase Order Date"
+    description: "Maximum Purchase Order Date over dimensions selected"
+    type: time
+    timeframes: [
+      raw,
+      date,
+      week,
+      month,
+      quarter,
+      year,
+      day_of_week,
+      day_of_month,
+      day_of_year,
+      week_of_year,
+      quarter_of_year,
+      time_of_day,
+      hour_of_day,
+      month_num,
+      month_name
+    ]
+    convert_tz: no
+    sql: MAX(${created_date}) ;;
+  }
+
 
   measure: count {
     type: count
