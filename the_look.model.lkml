@@ -52,6 +52,16 @@ explore: orders {
 #   sql_always_where: {% condition orders.date_filter %} ${created_raw} {% endcondition %}
 #   and {% condition orders.date_filter %} ${created_other_raw} {% endcondition %};;
 #   persist_with: four_hour_cache
+  sql_always_where:
+  {% if orders.date_filter._is_filtered %}
+  ${orders.created_date} between
+  date_add({% parameter orders.date_filter %}, interval -3 day)
+  and date_add({% parameter orders.date_filter %}, interval 3 day)
+  {% else %}
+  1=1
+  {% endif %};;
+
+
   join: users {
 #     fields: []
     sql_on: ${orders.user_id} = ${users.id} ;;

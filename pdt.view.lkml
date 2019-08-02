@@ -1,5 +1,29 @@
-# view: pdt {
-# derived_table: {
+view: pdt {
+derived_table: {
+  sql: SELECT {% parameter filter_name %} as select_field
+  FROM demo_db.orders;;
+  }
+
+
+  dimension: select_field {
+    sql: ${TABLE}.select_field ;;
+  }
+
+  parameter: filter_name {
+    type: unquoted
+    allowed_value: {
+      label: "Order ID"
+      value: "id"
+    }
+    allowed_value: {
+      label: "User ID"
+      value: "user_id"
+    }
+  }
+
+
+
+
 #   sql: {% assign var1 = table_name._parameter_value | plus: 0 %}
 # {% if var1 > 0 %}
 # select * from demo_db.orders
@@ -15,6 +39,6 @@
 #   type: number
 # }
 
-# }
+}
 
-# explore: pdt {}
+explore: pdt {}

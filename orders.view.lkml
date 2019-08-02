@@ -102,7 +102,11 @@ view: orders {
     html: Date is {{ _filters['orders.created_date'] }} ;;
   }
 
-  parameter: date_input {
+  filter: date_input {
+    type: date
+  }
+
+  parameter: date_filter {
     type: date
   }
 
@@ -118,17 +122,17 @@ view: orders {
     suggest_dimension: users.country
   }
 #
-#   dimension: date_start_input {
+  dimension: date_start_input {
 #     hidden: yes
-#     sql: {% date_start date_input %} ;;
-#     type: date
-#   }
-#
-#   dimension: date_end_input {
+    sql: {% date_start date_input %} ;;
+    type: date
+  }
+
+  dimension: date_end_input {
 #     hidden: yes
-#     sql: {% date_end date_input %} ;;
-#     type: date
-#   }
+    sql: {% date_end date_input %} ;;
+    type: date
+  }
 
   dimension: display_text {
     html: Date: {% if _filters['orders.created_date'] == "" %}
@@ -230,9 +234,9 @@ view: orders {
     # value_format: "[hh]:mm:dd"
   }
 
-  filter: date_filter {
-    type: date
-  }
+#   filter: date_filter {
+#     type: date
+#   }
 
   parameter: selected_city {
     type: string
@@ -575,3 +579,5 @@ dimension: new_york_city {
     }
   }
 }
+
+# explore: cranberry_sauce {}
