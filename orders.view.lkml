@@ -3,7 +3,7 @@ view: orders {
 #   sql_table_name: demo_db.users ;;
 
   dimension: id {
-    primary_key: no
+    primary_key: yes
     type: string
     sql: ${TABLE}.id ;;
     }
@@ -426,6 +426,7 @@ dimension: new_york_city {
 
   measure: count {
     type: count
+#     value_format: "[>=1000000000]0,,,\” B\“; [>=1000000]0,,\” M\“; [>=1000]0,\” K\“; #"
 #     required_fields: [created_date]
 #     drill_fields: [id, users.first_name, users.last_name, users.id, order_items.count, date_diff_second]
 #     drill_fields: [seconds_date_diff]
@@ -437,8 +438,11 @@ dimension: new_york_city {
 
   measure: running_total {
     type: running_total
-    sql: ${count} ;;
-    required_fields: [created_date]
+    sql: ${count}/100 ;;
+#         value_format: "[>=1000000000]0,,,\" B\"; [>=1000000]0,,\" M\"; [>=1000]0,\" K\";[>=0] 0"
+        value_format: "[>=1000000]0,,\" M\";[>=1000]0,\" K\";[>=1000000000]0;0"
+
+#     required_fields: [created_date]
   }
 
 #   dimension: created_1hour {

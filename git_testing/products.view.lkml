@@ -27,8 +27,8 @@ view: products {
 #     group_label: "apples"
     type: string
 #     sql: ${TABLE}.category ;;
-    sql: case when ${TABLE}.category IN("jeans", "pants")
-    then "pants"
+    sql: case when ${TABLE}.category = "Clothing Sets"
+    then "clothing_sets"
     else ${TABLE}.category end ;;
     # case: {
     #   when: {

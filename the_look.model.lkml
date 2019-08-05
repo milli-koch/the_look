@@ -1,5 +1,6 @@
 connection: "thelook"
 
+include: "/git_testing/*.view"
 include: "*.view"
 include: "products.explore.lkml"
 # include: "//schema/manifest.lkml"
@@ -48,18 +49,32 @@ explore: accounts {
 }
 
 explore: orders {
+  always_filter: {
+    filters: {
+      field: created_date
+      value: "6 months"
+    }
+    filters: {
+      field: is_cancelled
+      value: "No"
+    }
+    filters: {
+      field: products.category
+      value: "clothing^_sets,Active"
+    }
+  }
 
 #   sql_always_where: {% condition orders.date_filter %} ${created_raw} {% endcondition %}
 #   and {% condition orders.date_filter %} ${created_other_raw} {% endcondition %};;
 #   persist_with: four_hour_cache
-  sql_always_where:
-  {% if orders.date_filter._is_filtered %}
-  ${orders.created_date} between
-  date_add({% parameter orders.date_filter %}, interval -3 day)
-  and date_add({% parameter orders.date_filter %}, interval 3 day)
-  {% else %}
-  1=1
-  {% endif %};;
+#   sql_always_where:
+#   {% if orders.date_filter._is_filtered %}
+#   ${orders.created_date} between
+#   date_add({% parameter orders.date_filter %}, interval -3 day)
+#   and date_add({% parameter orders.date_filter %}, interval 3 day)
+#   {% else %}
+#   1=1
+#   {% endif %};;
 
 
   join: users {
