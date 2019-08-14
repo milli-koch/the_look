@@ -63,7 +63,7 @@ explore: orders {
     relationship: many_to_one
   }
 }
-
+#this is a test
 explore: products {}
 
 explore: schema_migrations {}
