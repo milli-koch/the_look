@@ -70,7 +70,7 @@
     conditional_formatting_include_nulls: false
     series_types: {}
     listen: {}
-    row: 6
+    row: 0
     col: 0
     width: 16
     height: 7
