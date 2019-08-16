@@ -3,6 +3,8 @@ connection: "thelook"
 # include all the views
 include: "*.view"
 
+include: "*.dashboard"
+
 datagroup: 232393_default_datagroup {
   # sql_trigger: SELECT MAX(id) FROM etl_log;;
   max_cache_age: "1 hour"

@@ -18,13 +18,12 @@ view: products {
     sql: ${TABLE}.category ;;
   }
 
-  dimension: unnested_value {
+  dimension: task_type  {
     type: string
-    hidden: yes
     sql: ${TABLE}.department ;;
   }
 
-  dimension: task_type {
+  dimension: unnested_value {
     type: string
     sql: ${TABLE}.item_name ;;
   }
