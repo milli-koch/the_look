@@ -19,32 +19,32 @@ view: order_items {
     sql: ${TABLE}.order_id ;;
   }
 
-  dimension_group: returned {
-    type: time
-    timeframes: [
-      raw,
-      time,
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
-    sql: ${TABLE}.returned_at ;;
-  }
+#   dimension_group: returned {
+#     type: time
+#     timeframes: [
+#       raw,
+#       time,
+#       date,
+#       week,
+#       month,
+#       quarter,
+#       year
+#     ]
+#     sql: ${TABLE}.returned_at ;;
+#   }
 
   dimension: sale_price {
     type: number
     sql: ${TABLE}.sale_price ;;
   }
-
-  measure: returned_count {
-    type: count
-    filters: {
-      field: returned_date
-      value: "Not Null"
-    }
-    }
+#
+#   measure: returned_count {
+#     type: count
+#     filters: {
+#       field: returned_date
+#       value: "Not Null"
+#     }
+#     }
 
   measure: count {
     type: count
