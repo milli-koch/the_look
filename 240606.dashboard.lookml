@@ -1,6 +1,7 @@
 - dashboard: '240630'
   title: '240630'
   layout: newspaper
+  refresh: 15 minutes
   elements:
   - title: New Tile
     name: New Tile
@@ -71,7 +72,7 @@
     series_types: {}
     listen: {}
     row: 0
-    col: 0
+    col: 7
     width: 16
     height: 7
   filters:
