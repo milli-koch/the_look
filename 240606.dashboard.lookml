@@ -73,7 +73,7 @@
     listen: {}
     row: 0
     col: 7
-    width: 16
+    width: 160
     height: 7
   filters:
   - name: Untitled Filter
