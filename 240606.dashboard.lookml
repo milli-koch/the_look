@@ -73,7 +73,7 @@
     listen: {}
     row: 0
     col: 7
-    width: 160
+    width: 2147483647000
     height: 7
   filters:
   - name: Untitled Filter
