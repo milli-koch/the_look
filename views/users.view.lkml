@@ -60,7 +60,6 @@ view: users {
   }
 
   dimension: name {
-#     view_label: "label"
     type: string
     sql: concat(${first_name}, " ", ${last_name}) ;;
     link: {
@@ -69,14 +68,9 @@ view: users {
     }
     link: {
       label: "Drill"
-      url: "https://localhost:9999/explore/the_looker/orders?fields=users.name,users.city,users.state,users.zip&f[users.created_Date]={{ _filters['users.created_date_date'] }}&f[users.name]={{ value }}&f[users.gender]={{ users.gender }}"
+      url: "https://localhost:9999/explore/the_look/orders?fields=users.name,users.city,users.state,users.zip&f[users.created_date]={{ _filters['users.created_date'] }}&f[users.name]={{ value }}&f[users.gender]={{ users.gender }}"
     }
-#     link: {
-#       label: "Email Template"
-#       url: "https://mail.google.com/mail/?view=cm&fs=1&to={{email._value}}&su=Hello from Jacky, Product Manager at MemSQL&body=Hi {{first_name._value}} - %0A%0ANice%20to%20meet%20you!%0A%0AMy%20name%20is%20Jacky%2C%20and%20I%20am%20a%20Product%20Manager%20at%20MemSQL.%20%0A%0AWe%20are%20very%20happy%20to%20see%20that%20you%20are%20using%20the%20MemSQL%20free%20tier%2C%20and%20wanted%20to%20reach%20out%20to%20hear%20your%20story.%20%0A%0AWould%20you%20be%20open%20to%20having%20a%20quick%20chat%2C%20so%20I%20can%20hear%20how%20you%27re%20using%20MemSQL%2C%20what%20you%27re%20working%20on%2C%20what%20you%27re%20building%2C%20what%20problem%20you%20are%20solving%2C%20any%20issues%20you%27ve%20run%20into%2C%20etc.%3F%20%0A%0AP.S.%20I%20want%20to%20be%20respectful%20of%20your%20time%2C%20so%20if%20this%20is%20not%20possible%2C%20feel%20free%20to%20say%20no!%20%0A%0AThanks!%0A"
-#       icon_url: "https://ssl.gstatic.com/ui/v1/icons/mail/favicon.ico"
-#     }
-#     html: <a href="/10?User={{ filterable_value }}"></a>;;
+
   }
 
   filter: user {
@@ -102,7 +96,14 @@ view: users {
 
   dimension: age {
     type: number
-    sql: ${TABLE}.age ;;
+    sql: (${TABLE}.age)*10 ;;
+    value_format: "[>=1000000000]0,,,\" B\"; [>=1000000]0,,\" M\";[>=1000]0,\" K\";[>=1000000000]0;0"
+  }
+
+  measure: total_age {
+    type: sum
+    sql: ${age} ;;
+    value_format: "[>=1000000000]0,,,\" B\"; [>=1000000]0,,\" M\";[>=1000]0,\" K\";[>=1000000000]0;0"
   }
 
   filter: city_filter {
@@ -138,6 +139,13 @@ view: users {
     type: string
     sql: ${TABLE}.email ;;
     tags: ["email"]
+    #     link: {
+#       label: "Email Template"
+#       url: "https://mail.google.com/mail/?view=cm&fs=1&to={{email._value}}&su=Hello from Jacky, Product Manager at MemSQL&body=Hi {{first_name._value}} - %0A%0ANice%20to%20meet%20you!%0A%0AMy%20name%20is%20Jacky%2C%20and%20I%20am%20a%20Product%20Manager%20at%20MemSQL.%20%0A%0AWe%20are%20very%20happy%20to%20see%20that%20you%20are%20using%20the%20MemSQL%20free%20tier%2C%20and%20wanted%20to%20reach%20out%20to%20hear%20your%20story.%20%0A%0AWould%20you%20be%20open%20to%20having%20a%20quick%20chat%2C%20so%20I%20can%20hear%20how%20you%27re%20using%20MemSQL%2C%20what%20you%27re%20working%20on%2C%20what%20you%27re%20building%2C%20what%20problem%20you%20are%20solving%2C%20any%20issues%20you%27ve%20run%20into%2C%20etc.%3F%20%0A%0AP.S.%20I%20want%20to%20be%20respectful%20of%20your%20time%2C%20so%20if%20this%20is%20not%20possible%2C%20feel%20free%20to%20say%20no!%20%0A%0AThanks!%0A"
+#       icon_url: "https://ssl.gstatic.com/ui/v1/icons/mail/favicon.ico"
+#     }
+#     html: <a href="/10?User={{ filterable_value }}"></a>;;
+
   }
 
   dimension: first_name {
@@ -165,7 +173,7 @@ view: users {
   dimension: state {
     type: string
     sql: ${TABLE}.state ;;
-    map_layer_name: us_states
+    map_layer_name: us_canada
   }
 
   measure: small_states {
@@ -178,7 +186,7 @@ view: users {
 
   dimension: zip {
     type: zipcode
-    map_layer_name: us_zipcode_tabulation_areas
+#     map_layer_name: sf
     sql: LPAD(${TABLE}.zip, 5, "0") ;;
   }
 
@@ -195,6 +203,10 @@ view: users {
   measure: total_days {
     type: sum
     sql: ${created_date} ;;
+    filters: {
+      field: created_date
+      value: "last week"
+    }
   }
 
   measure: users_per_day {

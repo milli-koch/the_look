@@ -1,5 +1,5 @@
 
-include: "*.view"
+include: "/views/*.view"
 
 view: users_ex {
 extends: [users]

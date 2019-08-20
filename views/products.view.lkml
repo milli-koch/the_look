@@ -1,3 +1,4 @@
+# include: "/manifest.lkml"
 view: products {
   sql_table_name: demo_db.products ;;
 
@@ -20,25 +21,31 @@ view: products {
     type: number
   }
 
+  parameter: category_param {
+    type: string
+    suggest_dimension: category
+  }
+
+dimension: var {
+  sql: 1 ;;
+  html:  {{ category_param._parameter_value  | replace: "&#39;", "" }};;
+}
 
   dimension: category {
-#     label: "category"
-#     label: "red"
-#     group_label: "apples"
     type: string
-#     sql: ${TABLE}.category ;;
-    sql: case when ${TABLE}.category = "Clothing Sets"
-    then "clothing_sets"
-    else ${TABLE}.category end ;;
-    # case: {
-    #   when: {
-    #     sql: ${TABLE}.category IN("jeans", "pants" ;;
-    #     label: "pants"
-    #   }
-    #   else: "other"
-    # }
-#     order_by_field: count
-#     html: <a href="https://localhost:9999/dashboards/4?f[products.brand]={{ products.brand._filterable_value }}">{{ value }}</a> ;;
+    sql: ${TABLE}.category ;;
+    html: {% assign var = category_param._parameter_value  | replace: "&#39;", "" %}
+    {% if value == var %}
+    <font color="darkgreen">{{ rendered_value }}</font>
+    {% else %}
+    <font color="darkred">{{ rendered_value }}</font>
+    {% endif %} ;;
+    }
+
+  dimension: encoded_category {
+    type: string
+    sql: ${TABLE}.category ;;
+    html: {{ value | url_encode }} ;;
     }
 
   dimension: department {

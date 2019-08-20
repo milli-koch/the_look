@@ -1,9 +1,9 @@
 connection: "thelook"
 
-include: "/git_testing/*.view"
-include: "*.view"
-include: "products.explore.lkml"
-# include: "//schema/manifest.lkml"
+include: "/views/*.view"
+include: "/other/products.explore.lkml"
+include: "/views/order_facts/*.view"
+# include: "/manifest.lkml"
 
 datagroup: the_look_default_datagroup {
   sql_trigger:  SELECT MAX(id) FROM orders;;
@@ -14,12 +14,33 @@ datagroup: four_hour_cache {
   max_cache_age: "4 hours"
 }
 
+map_layer: us_canada {
+  url: "https://github.com/milli-koch/the_look/blob/master/us_canada.topojson"
+
+}
+
 persist_with: the_look_default_datagroup
 
 access_grant: user_fields {
   user_attribute: department
   allowed_values: ["dcl"]
 }
+
+explore: sme_lookml {
+  always_filter: {
+    filters: {
+      field: category_filter
+    }
+    filters: {
+      field: date_filter
+    }
+    filters: {
+      field: region
+    }
+  }
+}
+
+explore: order_facts_dynamic {}
 
 explore: users {}
 
@@ -35,8 +56,8 @@ explore: products {
 explore: user {
   required_access_grants: [user_fields]
   view_name: users
-  view_label: "Users"
-  label: "User"
+#   view_label: "Users"
+#   label: "User"
   from: users_ex
   join: orders {
     sql_on: ${orders.user_id} = ${users.id} ;;
@@ -49,35 +70,41 @@ explore: accounts {
 }
 
 explore: orders {
-  always_filter: {
-    filters: {
-      field: created_date
-      value: "6 months"
-    }
-    filters: {
-      field: is_cancelled
-      value: "No"
-    }
-    filters: {
-      field: products.category
-      value: "clothing^_sets,Active"
-    }
-  }
+  sql_always_where: {% if orders.filter_or_no._parameter_value == "true"  %}
+      ${id} > 10
+      {% else %}
+      1 = 1
+      {% endif %}
+      ;;
+    #   always_filter: {
+    #     filters: {
+    #       field: created_date
+    #       value: "6 months"
+    #     }
+    #     filters: {
+    #       field: is_cancelled
+    #       value: "No"
+    #     }
+    #     filters: {
+    #       field: products.category
+    #       value: "clothing^_sets,Active"
+    #     }
+    #   }
 
-#   sql_always_where: {% condition orders.date_filter %} ${created_raw} {% endcondition %}
-#   and {% condition orders.date_filter %} ${created_other_raw} {% endcondition %};;
-#   persist_with: four_hour_cache
-#   sql_always_where:
-#   {% if orders.date_filter._is_filtered %}
-#   ${orders.created_date} between
-#   date_add({% parameter orders.date_filter %}, interval -3 day)
-#   and date_add({% parameter orders.date_filter %}, interval 3 day)
-#   {% else %}
-#   1=1
-#   {% endif %};;
+    #   sql_always_where: {% condition orders.date_filter %} ${created_raw} {% endcondition %}
+    #   and {% condition orders.date_filter %} ${created_other_raw} {% endcondition %};;
+    #   persist_with: four_hour_cache
+    #   sql_always_where:
+    #   {% if orders.date_filter._is_filtered %}
+    #   ${orders.created_date} between
+    #   date_add({% parameter orders.date_filter %}, interval -3 day)
+    #   and date_add({% parameter orders.date_filter %}, interval 3 day)
+    #   {% else %}
+    #   1=1
+    #   {% endif %};;
 
 
-  join: users {
+    join: users {
 #     fields: []
     sql_on: ${orders.user_id} = ${users.id} ;;
     type: left_outer
@@ -98,9 +125,9 @@ explore: orders {
 
   join: products {
 #     fields: [products.category, products.item_name, products.department, products.rank]
-    sql_on: ${inventory_items.product_id} =  ${products.id} ;;
-    relationship: many_to_one
-  }
+  sql_on: ${inventory_items.product_id} =  ${products.id} ;;
+  relationship: many_to_one
+}
 }
 
 # explore: users {
@@ -119,12 +146,31 @@ explore: orders {
 #
 # }
 
+explore: period_over_period {
+  view_name: orders
+  always_filter: {
+    filters: {
+      field: orders.time_period
+      value: "MTD"
+    }
+  }
+  sql_always_where:
+  {% if orders.time_period_parameter_value == 'WTD' %} ${is_wtd}
+  {% elsif orders.time_period._parameter_value == 'MTD' %} ${is_mtd}
+  {% elsif orders.time_period._parameter_value == 'QTD' %} ${is_qtd}
+  {% elsif orders.time_period._parameter_value == 'YTD' %} ${is_ytd}
+  {% else %} 1=1
+  {% endif %}
+  ;;
+}
+
+
 explore: inventory_items {
-  label: "Explorename"
+#   label: "Explorename"
   join: products {
     type: inner
     sql_on: ${inventory_items.product_id} = ${products.id}
-    and {% condition inventory_items.created_date %} ${inventory_items.created_date} {% endcondition %};;
+      and {% condition inventory_items.created_date %} ${inventory_items.created_date} {% endcondition %};;
     relationship: many_to_one
   }
 }

@@ -198,15 +198,15 @@ view: order_items {
     suggest_dimension: suggest_param
   }
 
-  filter: metric {
+  measure: metric {
 #     label: "{{ parameter metric_selector }}"
     type: number
     sql:
       CASE
         WHEN {% parameter metric_selector %} = 'total_first_purchase_revenue' THEN
-          ${sale_price}
+          ${total_sale_price}
         WHEN {% parameter metric_selector %} = 'total_returning_shopper_revenue' THEN
-          ${inventory_item_id}
+          ${average_sale_price}
         ELSE
           NULL
       END ;;
