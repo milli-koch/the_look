@@ -12,8 +12,8 @@ view: order_facts_dynamic {
             dbo.orders
         {% endif %}
       ;;
-  datagroup_trigger: the_look_default_datagroup
-  indexes: ["id"]
+#   datagroup_trigger: the_look_default_datagroup
+#   indexes: ["time"]
 }
 
 dimension_group: time {
@@ -22,6 +22,14 @@ dimension_group: time {
   sql: ${TABLE}.TIME ;;
 }
 
-measure: count {}
-
+  measure: count {
+    type: number
+    sql:
+    {% if time_date._in_query or time_month._in_query or time_year._in_query %}
+      SUM(${TABLE}.count)
+    {% else %}
+      COUNT(*)
+    {% endif %}
+    ;;
+  }
 }
