@@ -64,7 +64,7 @@ view: users {
   }
 
   dimension: zip {
-    type: zipcode
+    type: number
     sql: ${TABLE}.zip ;;
   }
 

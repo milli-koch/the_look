@@ -22,7 +22,6 @@ view: orders {
 #   }
 
   dimension: value {
-    hidden: yes
     type: string
     sql: ${TABLE}.status ;;
   }

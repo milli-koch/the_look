@@ -1,74 +1,20 @@
 - dashboard: f240630
   title: f240630
   layout: newspaper
-  refresh: '900000000'
+  refresh: 900000000 hours
   elements:
   - title: Stalled Units and Logistics Performance - Overall
     name: Stalled Units and Logistics Performance - Overall
     model: f232393
     explore: order_items
     type: table
-    fields: [users.city, users.city,
-         users.city, users.city,
-         users.city, users.city]
-    pivots: [users.city, users.city]
-    filters:
-      users.city: "-CANCELLED,-REFUNDED,-RETURNED,-NULL"
-      users.city: "-NULL,-CANCELLED, -RETURNED"
-      users.city: 'Yes'
-      order_items.id: ''
-      users.city: ''
-      users.city: '"JETBLACK_COURIER"'
-    sorts: [colabo_public_oms_item_status_activity_history.progress desc, colabo_public_code_eight_purchase_order_item.sla_for_delivery_date_tiers,
-      sort]
+    fields: [users.city, users.count,
+      users.created_date, products.count,
+      users.first_name, inventory_items.created_date]
+    sorts: [users.first_name desc, inventory_items.created_date,
+      users.count desc]
     limit: 500
     column_limit: 50
-    total: true
-    dynamic_fields: [{table_calculation: total_queue_per_column, label: Total Queue
-          per Column, expression: 'if(${colabo_public_oms_item_status_activity_history.progress}
-          = "In Queue",${colabo_public_code_eight_purchase_order_item.total_units},null)',
-        value_format: !!null '', value_format_name: !!null '', is_disabled: false,
-        _kind_hint: measure, _type_hint: number}, {table_calculation: sort, label: SORT,
-        expression: "if(${colabo_public_oms_item_status_activity_history.status} =\
-          \ \"PLACED\" , 1 ,\nif(${colabo_public_oms_item_status_activity_history.status}\
-          \ = \"SOURCED\" , 2 ,\nif(${colabo_public_oms_item_status_activity_history.status}\
-          \ = \"ORDERED\", 3,\nif(${colabo_public_oms_item_status_activity_history.status}\
-          \ = \"DISPATCHED\", 4,\nif(${colabo_public_oms_item_status_activity_history.status}\
-          \ = \"RECEIVED\", 5,\nif(${colabo_public_oms_item_status_activity_history.status}\
-          \ = \"INDUCTED\", 6,\nif(${colabo_public_oms_item_status_activity_history.status}\
-          \ = \"PACKED\", 7,\nif(${colabo_public_oms_item_status_activity_history.status}\
-          \ = \"QC_SIGNED_OFF\", 8,\nif(${colabo_public_oms_item_status_activity_history.status}\
-          \ = \"QC_APPROVED\", 8,\nif(${colabo_public_oms_item_status_activity_history.status}\
-          \ = \"SHIPPED\", 9,\nif(${colabo_public_oms_item_status_activity_history.status}\
-          \ = \"DELIVERED\", 10,10)))))))))))", value_format: !!null '', value_format_name: !!null '',
-        is_disabled: false, _kind_hint: dimension, _type_hint: number}, {table_calculation: total_in_queue_units,
-        label: Total In Queue Units, expression: 'sum(pivot_row(${total_queue_per_column}))',
-        value_format: !!null '', value_format_name: !!null '', is_disabled: false,
-        _kind_hint: supermeasure, _type_hint: number}, {table_calculation: total_stalled_units,
-        label: Total Stalled Units, expression: "${colabo_public_oms_item_status_activity_history_stalled_units.stalled_units:row_total}",
-        value_format: !!null '', value_format_name: !!null '', _kind_hint: supermeasure,
-        _type_hint: number}, {table_calculation: total_completed_units, label: Total
-          Completed Units, expression: 'sum(pivot_row(${total_completed_per_column}))',
-        value_format: !!null '', value_format_name: !!null '', _kind_hint: supermeasure,
-        _type_hint: number}, {table_calculation: total_in_queue_time, label: Total
-          In Queue Time, expression: 'coalesce(pivot_index(${colabo_public_oms_item_status_activity_history.total_time_difference},1),0)+coalesce(pivot_index(${colabo_public_oms_item_status_activity_history.total_time_difference},2),0)+coalesce(pivot_index(${colabo_public_oms_item_status_activity_history.total_time_difference},3),0)+coalesce(pivot_index(${colabo_public_oms_item_status_activity_history.total_time_difference},4),0)
-
-          ', value_format: !!null '', value_format_name: decimal_0, is_disabled: false,
-        _kind_hint: supermeasure, _type_hint: number}, {table_calculation: total_completed_time,
-        label: Total Completed Time, expression: 'coalesce(pivot_index(${colabo_public_oms_item_status_activity_history.total_time_difference},5),0)+coalesce(pivot_index(${colabo_public_oms_item_status_activity_history.total_time_difference},6),0)+coalesce(pivot_index(${colabo_public_oms_item_status_activity_history.total_time_difference},7),0)+coalesce(pivot_index(${colabo_public_oms_item_status_activity_history.total_time_difference},8),0)
-
-          ', value_format: !!null '', value_format_name: decimal_0, is_disabled: false,
-        _kind_hint: supermeasure, _type_hint: number}, {table_calculation: aging_in_minutes,
-        label: Aging (in Minutes), expression: "${total_in_queue_time}/ ${total_in_queue_units}",
-        value_format: !!null '', value_format_name: decimal_0, is_disabled: false,
-        _kind_hint: supermeasure, _type_hint: number}, {table_calculation: turn_around_time_in_minutes,
-        label: Turn Around Time (in Minutes), expression: "${total_completed_time}/${total_completed_units}",
-        value_format: !!null '', value_format_name: decimal_0, _kind_hint: supermeasure,
-        _type_hint: number}, {table_calculation: total_completed_per_column, label: Total
-          Completed per Column, expression: 'if(${colabo_public_oms_item_status_activity_history.progress}
-          = "Completed",${colabo_public_code_eight_purchase_order_item.total_units},null)',
-        value_format: !!null '', value_format_name: !!null '', _kind_hint: measure,
-        _type_hint: number}]
     show_view_names: false
     show_row_numbers: false
     truncate_column_names: false
@@ -96,67 +42,13 @@
     model: f232393
     explore: order_items
     type: table
-    fields: [users.city, users.city,
-      users.city, users.city,
-      users.city, users.city]
-    pivots: [users.city, users.city]
-    filters:
-      users.city: "-CANCELLED,-REFUNDED,-RETURNED,-NULL"
-      users.city: "-NULL,-CANCELLED, -RETURNED"
-      users.city: 'Yes'
-      order_items.id: ''
-      users.city: ''
-      users.city: '"JETBLACK_COURIER"'
-    sorts: [colabo_public_oms_item_status_activity_history.progress desc, colabo_public_code_eight_purchase_order_item.sla_for_delivery_date_tiers,
-      sort]
+    fields: [users.city, users.count,
+      users.created_date, products.count,
+      users.first_name, inventory_items.created_date]
+    sorts: [users.first_name desc, inventory_items.created_date,
+        users.count desc]
     limit: 500
     column_limit: 50
-    total: true
-    dynamic_fields: [{table_calculation: total_queue_per_column, label: Total Queue
-          per Column, expression: 'if(${colabo_public_oms_item_status_activity_history.progress}
-          = "In Queue",${colabo_public_code_eight_purchase_order_item.total_units},null)',
-        value_format: !!null '', value_format_name: !!null '', is_disabled: false,
-        _kind_hint: measure, _type_hint: number}, {table_calculation: sort, label: SORT,
-        expression: "if(${colabo_public_oms_item_status_activity_history.status} =\
-          \ \"PLACED\" , 1 ,\nif(${colabo_public_oms_item_status_activity_history.status}\
-          \ = \"SOURCED\" , 2 ,\nif(${colabo_public_oms_item_status_activity_history.status}\
-          \ = \"ORDERED\", 3,\nif(${colabo_public_oms_item_status_activity_history.status}\
-          \ = \"DISPATCHED\", 4,\nif(${colabo_public_oms_item_status_activity_history.status}\
-          \ = \"RECEIVED\", 5,\nif(${colabo_public_oms_item_status_activity_history.status}\
-          \ = \"INDUCTED\", 6,\nif(${colabo_public_oms_item_status_activity_history.status}\
-          \ = \"PACKED\", 7,\nif(${colabo_public_oms_item_status_activity_history.status}\
-          \ = \"QC_SIGNED_OFF\", 8,\nif(${colabo_public_oms_item_status_activity_history.status}\
-          \ = \"QC_APPROVED\", 8,\nif(${colabo_public_oms_item_status_activity_history.status}\
-          \ = \"SHIPPED\", 9,\nif(${colabo_public_oms_item_status_activity_history.status}\
-          \ = \"DELIVERED\", 10,10)))))))))))", value_format: !!null '', value_format_name: !!null '',
-        is_disabled: false, _kind_hint: dimension, _type_hint: number}, {table_calculation: total_in_queue_units,
-        label: Total In Queue Units, expression: 'sum(pivot_row(${total_queue_per_column}))',
-        value_format: !!null '', value_format_name: !!null '', is_disabled: false,
-        _kind_hint: supermeasure, _type_hint: number}, {table_calculation: total_stalled_units,
-        label: Total Stalled Units, expression: "${colabo_public_oms_item_status_activity_history_stalled_units.stalled_units:row_total}",
-        value_format: !!null '', value_format_name: !!null '', _kind_hint: supermeasure,
-        _type_hint: number}, {table_calculation: total_completed_units, label: Total
-          Completed Units, expression: 'sum(pivot_row(${total_completed_per_column}))',
-        value_format: !!null '', value_format_name: !!null '', _kind_hint: supermeasure,
-        _type_hint: number}, {table_calculation: total_in_queue_time, label: Total
-          In Queue Time, expression: 'coalesce(pivot_index(${colabo_public_oms_item_status_activity_history.total_time_difference},1),0)+coalesce(pivot_index(${colabo_public_oms_item_status_activity_history.total_time_difference},2),0)+coalesce(pivot_index(${colabo_public_oms_item_status_activity_history.total_time_difference},3),0)+coalesce(pivot_index(${colabo_public_oms_item_status_activity_history.total_time_difference},4),0)
-
-          ', value_format: !!null '', value_format_name: decimal_0, is_disabled: false,
-        _kind_hint: supermeasure, _type_hint: number}, {table_calculation: total_completed_time,
-        label: Total Completed Time, expression: 'coalesce(pivot_index(${colabo_public_oms_item_status_activity_history.total_time_difference},5),0)+coalesce(pivot_index(${colabo_public_oms_item_status_activity_history.total_time_difference},6),0)+coalesce(pivot_index(${colabo_public_oms_item_status_activity_history.total_time_difference},7),0)+coalesce(pivot_index(${colabo_public_oms_item_status_activity_history.total_time_difference},8),0)
-
-          ', value_format: !!null '', value_format_name: decimal_0, is_disabled: false,
-        _kind_hint: supermeasure, _type_hint: number}, {table_calculation: aging_in_minutes,
-        label: Aging (in Minutes), expression: "${total_in_queue_time}/ ${total_in_queue_units}",
-        value_format: !!null '', value_format_name: decimal_0, is_disabled: false,
-        _kind_hint: supermeasure, _type_hint: number}, {table_calculation: turn_around_time_in_minutes,
-        label: Turn Around Time (in Minutes), expression: "${total_completed_time}/${total_completed_units}",
-        value_format: !!null '', value_format_name: decimal_0, _kind_hint: supermeasure,
-        _type_hint: number}, {table_calculation: total_completed_per_column, label: Total
-          Completed per Column, expression: 'if(${colabo_public_oms_item_status_activity_history.progress}
-          = "Completed",${colabo_public_code_eight_purchase_order_item.total_units},null)',
-        value_format: !!null '', value_format_name: !!null '', _kind_hint: measure,
-        _type_hint: number}]
     show_view_names: false
     show_row_numbers: false
     truncate_column_names: false
@@ -187,67 +79,13 @@
     model: f232393
     explore: order_items
     type: table
-    fields: [users.city, users.city,
-      users.city, users.city,
-      users.city, users.city]
-    pivots: [users.city, users.city]
-    filters:
-      users.city: "-CANCELLED,-REFUNDED,-RETURNED,-NULL"
-      users.city: "-NULL,-CANCELLED, -RETURNED"
-      users.city: 'Yes'
-      order_items.id: ''
-      users.city: ''
-      users.city: "-DTC"
-    sorts: [colabo_public_oms_item_status_activity_history.progress desc, colabo_public_code_eight_purchase_order_item.sla_for_delivery_date_tiers,
-      sort]
+    fields: [users.city, users.count,
+      users.created_date, products.count,
+      users.first_name, inventory_items.created_date]
+    sorts: [users.first_name desc, inventory_items.created_date,
+        users.count desc]
     limit: 500
     column_limit: 50
-    total: true
-    dynamic_fields: [{table_calculation: total_queue_per_column, label: Total Queue
-          per Column, expression: 'if(${colabo_public_oms_item_status_activity_history.progress}
-          = "In Queue",${colabo_public_code_eight_purchase_order_item.total_units},null)',
-        value_format: !!null '', value_format_name: !!null '', is_disabled: false,
-        _kind_hint: measure, _type_hint: number}, {table_calculation: sort, label: SORT,
-        expression: "if(${colabo_public_oms_item_status_activity_history.status} =\
-          \ \"PLACED\" , 1 ,\nif(${colabo_public_oms_item_status_activity_history.status}\
-          \ = \"SOURCED\" , 2 ,\nif(${colabo_public_oms_item_status_activity_history.status}\
-          \ = \"ORDERED\", 3,\nif(${colabo_public_oms_item_status_activity_history.status}\
-          \ = \"DISPATCHED\", 4,\nif(${colabo_public_oms_item_status_activity_history.status}\
-          \ = \"RECEIVED\", 5,\nif(${colabo_public_oms_item_status_activity_history.status}\
-          \ = \"INDUCTED\", 6,\nif(${colabo_public_oms_item_status_activity_history.status}\
-          \ = \"PACKED\", 7,\nif(${colabo_public_oms_item_status_activity_history.status}\
-          \ = \"QC_SIGNED_OFF\", 8,\nif(${colabo_public_oms_item_status_activity_history.status}\
-          \ = \"QC_APPROVED\", 8,\nif(${colabo_public_oms_item_status_activity_history.status}\
-          \ = \"SHIPPED\", 9,\nif(${colabo_public_oms_item_status_activity_history.status}\
-          \ = \"DELIVERED\", 10,10)))))))))))", value_format: !!null '', value_format_name: !!null '',
-        is_disabled: false, _kind_hint: dimension, _type_hint: number}, {table_calculation: total_in_queue_units,
-        label: Total In Queue Units, expression: 'sum(pivot_row(${total_queue_per_column}))',
-        value_format: !!null '', value_format_name: !!null '', is_disabled: false,
-        _kind_hint: supermeasure, _type_hint: number}, {table_calculation: total_stalled_units,
-        label: Total Stalled Units, expression: "${colabo_public_oms_item_status_activity_history_stalled_units.stalled_units:row_total}",
-        value_format: !!null '', value_format_name: !!null '', _kind_hint: supermeasure,
-        _type_hint: number}, {table_calculation: total_completed_units, label: Total
-          Completed Units, expression: 'sum(pivot_row(${total_completed_per_column}))',
-        value_format: !!null '', value_format_name: !!null '', _kind_hint: supermeasure,
-        _type_hint: number}, {table_calculation: total_in_queue_time, label: Total
-          In Queue Time, expression: 'coalesce(pivot_index(${colabo_public_oms_item_status_activity_history.total_time_difference},1),0)+coalesce(pivot_index(${colabo_public_oms_item_status_activity_history.total_time_difference},2),0)+coalesce(pivot_index(${colabo_public_oms_item_status_activity_history.total_time_difference},3),0)+coalesce(pivot_index(${colabo_public_oms_item_status_activity_history.total_time_difference},4),0)
-
-          ', value_format: !!null '', value_format_name: decimal_0, is_disabled: false,
-        _kind_hint: supermeasure, _type_hint: number}, {table_calculation: total_completed_time,
-        label: Total Completed Time, expression: 'coalesce(pivot_index(${colabo_public_oms_item_status_activity_history.total_time_difference},5),0)+coalesce(pivot_index(${colabo_public_oms_item_status_activity_history.total_time_difference},6),0)+coalesce(pivot_index(${colabo_public_oms_item_status_activity_history.total_time_difference},7),0)+coalesce(pivot_index(${colabo_public_oms_item_status_activity_history.total_time_difference},8),0)
-
-          ', value_format: !!null '', value_format_name: decimal_0, is_disabled: false,
-        _kind_hint: supermeasure, _type_hint: number}, {table_calculation: aging_in_minutes,
-        label: Aging (in Minutes), expression: "${total_in_queue_time}/ ${total_in_queue_units}",
-        value_format: !!null '', value_format_name: decimal_0, is_disabled: false,
-        _kind_hint: supermeasure, _type_hint: number}, {table_calculation: turn_around_time_in_minutes,
-        label: Turn Around Time (in Minutes), expression: "${total_completed_time}/${total_completed_units}",
-        value_format: !!null '', value_format_name: decimal_0, _kind_hint: supermeasure,
-        _type_hint: number}, {table_calculation: total_completed_per_column, label: Total
-          Completed per Column, expression: 'if(${colabo_public_oms_item_status_activity_history.progress}
-          = "Completed",${colabo_public_code_eight_purchase_order_item.total_units},null)',
-        value_format: !!null '', value_format_name: !!null '', _kind_hint: measure,
-        _type_hint: number}]
     show_view_names: false
     show_row_numbers: false
     truncate_column_names: false
@@ -278,66 +116,13 @@
     model: f232393
     explore: order_items
     type: table
-    fields: [users.city, users.city,
-      users.city, users.city,
-      users.city, users.city]
-    pivots: [users.city, users.city]
-    filters:
-      users.city: "-CANCELLED,-REFUNDED,-RETURNED,-NULL"
-      users.city: "-NULL,-CANCELLED, -RETURNED"
-      users.city: 'Yes'
-      order_items.id: ''
-      users.city: ''
-    sorts: [users.city desc, users.city,
-      sort]
+    fields: [users.city, users.count,
+        users.created_date, products.count,
+        users.first_name, inventory_items.created_date]
+    sorts: [users.first_name desc, inventory_items.created_date,
+        users.count desc]
     limit: 500
     column_limit: 50
-    total: true
-    dynamic_fields: [{table_calculation: total_queue_per_column, label: Total Queue
-          per Column, expression: 'if(${colabo_public_oms_item_status_activity_history.progress}
-          = "In Queue",${colabo_public_code_eight_purchase_order_item.total_units},null)',
-        value_format: !!null '', value_format_name: !!null '', is_disabled: false,
-        _kind_hint: measure, _type_hint: number}, {table_calculation: sort, label: SORT,
-        expression: "if(${colabo_public_oms_item_status_activity_history.status} =\
-          \ \"PLACED\" , 1 ,\nif(${colabo_public_oms_item_status_activity_history.status}\
-          \ = \"SOURCED\" , 2 ,\nif(${colabo_public_oms_item_status_activity_history.status}\
-          \ = \"ORDERED\", 3,\nif(${colabo_public_oms_item_status_activity_history.status}\
-          \ = \"DISPATCHED\", 4,\nif(${colabo_public_oms_item_status_activity_history.status}\
-          \ = \"RECEIVED\", 5,\nif(${colabo_public_oms_item_status_activity_history.status}\
-          \ = \"INDUCTED\", 6,\nif(${colabo_public_oms_item_status_activity_history.status}\
-          \ = \"PACKED\", 7,\nif(${colabo_public_oms_item_status_activity_history.status}\
-          \ = \"QC_SIGNED_OFF\", 8,\nif(${colabo_public_oms_item_status_activity_history.status}\
-          \ = \"QC_APPROVED\", 8,\nif(${colabo_public_oms_item_status_activity_history.status}\
-          \ = \"SHIPPED\", 9,\nif(${colabo_public_oms_item_status_activity_history.status}\
-          \ = \"DELIVERED\", 10,10)))))))))))", value_format: !!null '', value_format_name: !!null '',
-        is_disabled: false, _kind_hint: dimension, _type_hint: number}, {table_calculation: total_in_queue_units,
-        label: Total In Queue Units, expression: 'sum(pivot_row(${total_queue_per_column}))',
-        value_format: !!null '', value_format_name: !!null '', is_disabled: false,
-        _kind_hint: supermeasure, _type_hint: number}, {table_calculation: total_stalled_units,
-        label: Total Stalled Units, expression: "${colabo_public_oms_item_status_activity_history_stalled_units.stalled_units:row_total}",
-        value_format: !!null '', value_format_name: !!null '', _kind_hint: supermeasure,
-        _type_hint: number}, {table_calculation: total_completed_units, label: Total
-          Completed Units, expression: 'sum(pivot_row(${total_completed_per_column}))',
-        value_format: !!null '', value_format_name: !!null '', _kind_hint: supermeasure,
-        _type_hint: number}, {table_calculation: total_in_queue_time, label: Total
-          In Queue Time, expression: 'coalesce(pivot_index(${colabo_public_oms_item_status_activity_history.total_time_difference},1),0)+coalesce(pivot_index(${colabo_public_oms_item_status_activity_history.total_time_difference},2),0)+coalesce(pivot_index(${colabo_public_oms_item_status_activity_history.total_time_difference},3),0)+coalesce(pivot_index(${colabo_public_oms_item_status_activity_history.total_time_difference},4),0)
-
-          ', value_format: !!null '', value_format_name: decimal_0, is_disabled: false,
-        _kind_hint: supermeasure, _type_hint: number}, {table_calculation: total_completed_time,
-        label: Total Completed Time, expression: 'coalesce(pivot_index(${colabo_public_oms_item_status_activity_history.total_time_difference},5),0)+coalesce(pivot_index(${colabo_public_oms_item_status_activity_history.total_time_difference},6),0)+coalesce(pivot_index(${colabo_public_oms_item_status_activity_history.total_time_difference},7),0)+coalesce(pivot_index(${colabo_public_oms_item_status_activity_history.total_time_difference},8),0)
-
-          ', value_format: !!null '', value_format_name: decimal_0, is_disabled: false,
-        _kind_hint: supermeasure, _type_hint: number}, {table_calculation: aging_in_minutes,
-        label: Aging (in Minutes), expression: "${total_in_queue_time}/ ${total_in_queue_units}",
-        value_format: !!null '', value_format_name: decimal_0, is_disabled: false,
-        _kind_hint: supermeasure, _type_hint: number}, {table_calculation: turn_around_time_in_minutes,
-        label: Turn Around Time (in Minutes), expression: "${total_completed_time}/${total_completed_units}",
-        value_format: !!null '', value_format_name: decimal_0, _kind_hint: supermeasure,
-        _type_hint: number}, {table_calculation: total_completed_per_column, label: Total
-          Completed per Column, expression: 'if(${colabo_public_oms_item_status_activity_history.progress}
-          = "Completed",${colabo_public_code_eight_purchase_order_item.total_units},null)',
-        value_format: !!null '', value_format_name: !!null '', _kind_hint: measure,
-        _type_hint: number}]
     show_view_names: false
     show_row_numbers: false
     truncate_column_names: false
