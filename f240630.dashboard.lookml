@@ -1,7 +1,7 @@
 - dashboard: f240630
   title: f240630
   layout: newspaper
-  refresh: 900000000 hours
+  refresh: 15 minutes
   elements:
   - title: Stalled Units and Logistics Performance - Overall
     name: Stalled Units and Logistics Performance - Overall
