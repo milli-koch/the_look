@@ -15,9 +15,41 @@ view: orders {
     {% endif %};;
   }
 
+  parameter: day_ago {
+    type: number
+  }
+
+  dimension: user_order_sequence_number {
+    type: number
+    sql:
+    (
+      SELECT COUNT(*)
+      FROM orders AS o
+      WHERE o.id <= ${TABLE}.id
+        AND o.user_id = ${TABLE}.user_id
+    ) ;;
+  }
+
   dimension: id_filter {
     type: yesno
     sql: ${id} in (1,2,3,4) ;;
+  }
+
+  parameter: bool_filter {
+    type: yesno
+  }
+
+  dimension: bool {
+    sql: {% parameter bool_filter %} ;;
+  }
+
+  dimension: model_name {
+    sql: 1 ;;
+    html: {% if _model._name  == 'the_look' %}
+    "yes"
+    {% else %}
+    "no"
+    {% endif %};;
   }
 
   parameter: time_period {
@@ -136,6 +168,11 @@ view: orders {
       ;;
   }
 
+  dimension: created_year_test {
+    type: date_year
+    suggestions: ["2019","2018","2017"]
+  }
+
   dimension: date_is_mtd {
     type: yesno
     sql:
@@ -167,8 +204,41 @@ filter: date_input {
   type: date
 }
 
-parameter: date_filter {
-  type: date
+parameter: timeframe_select {
+  type: string
+  allowed_value: { value: "Week" }
+  allowed_value: { value: "Month" }
+  allowed_value: { value: "Quarter" }
+  }
+
+  dimension: parameter_value {
+    sql: {{ timeframe_select._parameter_value }} ;;
+  }
+
+dimension: selected_timeframe  {
+   # sql: {% if timeframe_select._parameter_value == 'Week' %}
+  # ${created_week_of_year}
+  # {% elsif timeframe_select._parameter_value == 'Month' %}
+  # ${created_month_num}
+  # {% elsif timeframe_select._parameter_value == 'Quarter' %}
+  # ${created_quarter_of_year}
+  # {% else %}
+  # null
+  # {% endif %};;
+sql: CASE
+    WHEN {% parameter timeframe_select %} = 'Week' THEN cast(${created_week_of_year} as char)
+    WHEN {% parameter timeframe_select %} = 'Month' THEN cast(${created_month_num} as char)
+    WHEN {% parameter timeframe_select %} = 'Quarter' THEN cast(${created_quarter_of_year} as char)
+    ELSE NULL
+  END ;;
+}
+
+dimension: order_by_field {
+  sql: {% if timeframe_select  == 'Week' %}
+  "yes"
+  {% else %}
+  "no"
+  {% endif %};;
 }
 
 parameter: campus {
@@ -236,6 +306,7 @@ dimension_group: created {
     week,
     month,
     month_name,
+    day_of_year,
     day_of_month,
     quarter,
     quarter_of_year,
@@ -248,6 +319,11 @@ dimension_group: created {
   sql: ${TABLE}.created_at ;;
 #     datatype: date
   convert_tz: no
+}
+
+dimension: created_date_of_year {
+  type: date
+  sql: date_format(${created_date}, "%c %d") ;;
 }
 
 dimension: month {
@@ -506,12 +582,7 @@ measure: count {
 
 measure: running_total {
   type: running_total
-  sql: ${count}*100;;
-#     value_format: "[>=1000000000]0,,,\" B\";[>=1000000]0,,\" M\";[>=1000]0,\" K\"; 0"
-#     value_format: "[<1000]0; [<1000000]0,\" K\"; [<1000000000]0,,\" M\";[>=1000000000]0,,,\" B\""
-  html: {{ rendered_value }},,,\" B\"
-    ;;
-#     required_fields: [created_date]
+  sql: ${count};;
   }
 
 #   dimension: seconds {
@@ -643,7 +714,7 @@ measure: running_total {
     drill_fields: [id, created_day_of_week, created_date]
     filters: {
       field: created_date
-      value: "this week"
+      value: "this week,last week"
     }
   }
 }

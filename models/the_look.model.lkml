@@ -1,6 +1,7 @@
 connection: "thelook"
 
 include: "/views/*.view"
+include: "/dashboards/*.dashboard.lookml"
 include: "/other/products.explore.lkml"
 include: "/views/order_facts/*.view"
 # include: "/manifest.lkml"
@@ -42,7 +43,9 @@ explore: sme_lookml {
 
 explore: order_facts_dynamic {}
 
-explore: users {}
+explore: users_alias {
+  from: users
+}
 
 explore: products {
   extends: [products_base]
@@ -70,12 +73,12 @@ explore: accounts {
 }
 
 explore: orders {
-  sql_always_where: {% if orders.filter_or_no._parameter_value == "true"  %}
-      ${id} > 10
-      {% else %}
-      1 = 1
-      {% endif %}
-      ;;
+  # sql_always_where:
+  # {% if inventory_items.days_ago._in_query %}
+  # ${inventory_items.created_date} = date_add(${created_date}, interval -{% parameter inventory_items.days_ago %} day)
+  # {% else %}
+  # 1 = 1
+  # {% endif %};;
     #   always_filter: {
     #     filters: {
     #       field: created_date

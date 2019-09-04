@@ -1,5 +1,9 @@
 view: inventory_items {
   sql_table_name: demo_db.inventory_items ;;
+# derived_table: {
+#   sql: select * from demo_db.inventory_items where
+#   created_at = date_add(-3, ;;
+# }
 
   dimension: id {
     primary_key: yes
@@ -17,9 +21,18 @@ view: inventory_items {
     sql: ${cost} ;;
   }
 
+  parameter: days_ago {
+    type: number
+  }
+
+  filter: date_filter {
+    type: date
+  }
+
   dimension_group: created {
     type: time
     timeframes: [
+      date,
       raw,
       time,
       week,
@@ -29,10 +42,10 @@ view: inventory_items {
     sql: ${TABLE}.created_at ;;
   }
 
-  dimension: created_date {
-    type: date
-    sql: ${TABLE}.created_at ;;
-  }
+#   dimension: created_date {
+#     type: date
+#     sql: ${TABLE}.created_at ;;
+#   }
 
   dimension: product_id {
     type: number

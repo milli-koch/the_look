@@ -64,11 +64,15 @@ view: users {
     sql: concat(${first_name}, " ", ${last_name}) ;;
     link: {
       label: "User Dashboard"
-      url: "https://localhost:9999/dashboards/4?User={{ value }}&Date={{ _filters['users.created_date'] }}&Gender={{ users.gender | url_encode }}"
+      url: "{% if users.first_name._is_selected %}
+      /dashboards/4
+      {% else %}
+      /dashboards/4?User={{ value }}&Date={{ _filters['users.created_date'] }}&Gender={{ users.gender | url_encode }}
+      {% endif %}"
     }
     link: {
       label: "Drill"
-      url: "https://localhost:9999/explore/the_look/orders?fields=users.name,users.city,users.state,users.zip&f[users.created_date]={{ _filters['users.created_date'] }}&f[users.name]={{ value }}&f[users.gender]={{ users.gender }}"
+      url: "?fields=users.name,users.city,users.state,users.zip&f[users.created_date]={{ _filters['users.created_date'] }}&f[users.name]={{ value }}&f[users.gender]={{ users.gender }}"
     }
 
   }
@@ -181,6 +185,14 @@ view: users {
     filters: {
       field: state
       value: "-California, -Texas,-null"
+    }
+  }
+
+  measure: large_states {
+    type: count
+    filters: {
+      field: state
+      value: "California, Texas, NULL"
     }
   }
 
