@@ -2,7 +2,7 @@
   title: Testing Dashboard
   layout: newspaper
   description: description of a dashboard
-  query_timezone: query_saved
+  # query_timezone: query_saved
   elements:
   - title: Column
     name: Column
@@ -279,7 +279,7 @@
     fields: [products.department, products.count]
     sorts: [products.count desc]
     limit: 500
-    query_timezone: America/Los_Angeles
+    # query_timezone: America/Los_Angeles
     series_types: {}
     note_state: expanded
     note_display: below
@@ -302,7 +302,7 @@
     dynamic_fields: [{table_calculation: calculation_1, label: Calculation 1, expression: "${inventory_items.id}\
           \ * 1.0", value_format: !!null '', value_format_name: !!null '', _kind_hint: dimension,
         _type_hint: number}]
-    query_timezone: America/Los_Angeles
+    # query_timezone: America/Los_Angeles
     show_view_names: true
     show_row_numbers: true
     truncate_column_names: false
