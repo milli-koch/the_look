@@ -18,14 +18,6 @@ view: users {
     }
   }
 
-  # measure: has_more_than_one_order {
-  #   type: count
-  #   filters: {
-  #     field: orders.id
-  #     value: "> 1"
-  #   }
-  # }
-
 
 
 #   derived_table:{
@@ -70,20 +62,18 @@ view: users {
   dimension: name {
     type: string
     sql: concat(${first_name}, " ", ${last_name}) ;;
-    html: {{ value }} ;;
-#     link: {
-#       label: "User Dashboard"
-#       url: "{% if users.first_name._is_selected %}
-#       /dashboards/4
-#       {% else %}
-#       /dashboards/4?User={{ value }}&Date={{ _filters['users.created_date'] }}
-#       &Gender={{ users.gender | url_encode }}
-#       {% endif %}"
-#     }
-#     link: {
-#       label: "Drill"
-#       url: "?fields=users.name,users.city,users.state,users.zip&f[users.created_date]={{ _filters['users.created_date'] }}&f[users.name]={{ value }}&f[users.gender]={{ users.gender }}"
-#     }
+    link: {
+      label: "User Dashboard"
+      url: "{% if users.first_name._is_selected %}
+      /dashboards/4
+      {% else %}
+      /dashboards/4?User={{ value }}&Date={{ _filters['users.created_date'] }}&Gender={{ users.gender | url_encode }}
+      {% endif %}"
+    }
+    link: {
+      label: "Drill"
+      url: "?fields=users.name,users.city,users.state,users.zip&f[users.created_date]={{ _filters['users.created_date'] }}&f[users.name]={{ value }}&f[users.gender]={{ users.gender }}"
+    }
 
   }
 
@@ -126,7 +116,7 @@ view: users {
 
   dimension: city {
     type: string
-    sql: ${TABLE}.city;;
+    sql: ${TABLE}.city  ;;
   }
 
   dimension: country {
@@ -158,7 +148,7 @@ view: users {
 #       url: "https://mail.google.com/mail/?view=cm&fs=1&to={{email._value}}&su=Hello from Jacky, Product Manager at MemSQL&body=Hi {{first_name._value}} - %0A%0ANice%20to%20meet%20you!%0A%0AMy%20name%20is%20Jacky%2C%20and%20I%20am%20a%20Product%20Manager%20at%20MemSQL.%20%0A%0AWe%20are%20very%20happy%20to%20see%20that%20you%20are%20using%20the%20MemSQL%20free%20tier%2C%20and%20wanted%20to%20reach%20out%20to%20hear%20your%20story.%20%0A%0AWould%20you%20be%20open%20to%20having%20a%20quick%20chat%2C%20so%20I%20can%20hear%20how%20you%27re%20using%20MemSQL%2C%20what%20you%27re%20working%20on%2C%20what%20you%27re%20building%2C%20what%20problem%20you%20are%20solving%2C%20any%20issues%20you%27ve%20run%20into%2C%20etc.%3F%20%0A%0AP.S.%20I%20want%20to%20be%20respectful%20of%20your%20time%2C%20so%20if%20this%20is%20not%20possible%2C%20feel%20free%20to%20say%20no!%20%0A%0AThanks!%0A"
 #       icon_url: "https://ssl.gstatic.com/ui/v1/icons/mail/favicon.ico"
 #     }
-    html: <a href="/10?User={{ filterable_value }}"></a>;;
+#     html: <a href="/10?User={{ filterable_value }}"></a>;;
 
   }
 

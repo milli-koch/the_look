@@ -15,23 +15,8 @@ view: orders {
     {% endif %};;
   }
 
-  dimension: test_link {
-    sql: '1' ;;
-    link: {
-      label: "test google with line break"
-      url:
-      "https://google{% comment %}
-      {% endcomment %}.{% comment %}
-      {% endcomment %}com"
-    }
-  }
-
   parameter: day_ago {
-    type: string
-  }
-
-  dimension: day_ago_input {
-    sql: {% parameter day_ago %} ;;
+    type: number
   }
 
   dimension: user_order_sequence_number {
@@ -144,8 +129,6 @@ view: orders {
     sql: current_timestamp;;
     html: {{value}} {{ _query._query_timezone }} ;;
   }
-
-
 
   dimension: days_ago {
     type: duration_day
@@ -338,10 +321,9 @@ dimension_group: created {
   convert_tz: no
 }
 
-dimension: created_date_month {
+dimension: created_date_of_year {
   type: date
-  sql: ${created_date} ;;
-  html: {{ rendered_value | date: "%m-%d" }} ;;
+  sql: date_format(${created_date}, "%c %d") ;;
 }
 
 dimension: month {
@@ -590,8 +572,11 @@ measure: count {
   type: count
 #     value_format: "[>=1000000000]0,,,\” B\“; [>=1000000]0,,\” M\“; [>=1000]0,\” K\“; #"
 #     required_fields: [created_date]
-    drill_fields: [id, users.first_name, users.last_name, users.id, order_items.count]
-    html:<p style="color: black; background-color: lightblue; font-size:100%; text-align:center">{{ linked_value }}</p> ;;
+#     drill_fields: [id, users.first_name, users.last_name, users.id, order_items.count, date_diff_second]
+#     drill_fields: [seconds_date_diff]
+#   filters: {
+#     field: created_date
+#     value: "7 days"
 #   }
 }
 

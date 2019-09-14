@@ -2,7 +2,7 @@
   title: sys_activity_performance_dashboard_UDD
   layout: newspaper
   refresh: 1 hour
-  # query_timezone: query_saved
+  query_timezone: query_saved
   elements:
   - name: 'tile1'
     type: text
@@ -361,7 +361,7 @@
       event.created_date: 30 days
     sorts: [event.count desc]
     limit: 500
-    # query_timezone: America/Los_Angeles
+    query_timezone: America/Los_Angeles
     show_view_names: true
     show_row_numbers: true
     truncate_column_names: false
@@ -394,7 +394,7 @@
       history.created_date: 7 days
     sorts: [history.query_run_count desc 0, history.source]
     limit: 500
-    # query_timezone: user_timezone
+    query_timezone: user_timezone
     show_view_names: true
     show_row_numbers: true
     truncate_column_names: false
