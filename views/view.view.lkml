@@ -1,4 +1,7 @@
 view: view {
+  sql_table_name: ${pdt.SQL_TABLE_NAME} ;;
+
+  dimension: select_field {}
   # # You can specify the table name if it's different from the view name:
   # sql_table_name: my_schema_name.tester ;;
   #
@@ -28,6 +31,7 @@ view: view {
   #   sql: ${lifetime_orders} ;;
   # }
 }
+explore: view {}
 
 # view: view {
 #   # Or, you could make this view a derived table, like this:
