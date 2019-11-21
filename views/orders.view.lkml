@@ -15,6 +15,10 @@ view: orders {
     {% endif %};;
   }
 
+  dimension: end_date {
+    sql: {% date_end created_date %} ;;
+  }
+
   dimension: test_link {
     sql: '1' ;;
     link: {
@@ -52,6 +56,18 @@ view: orders {
 
   parameter: bool_filter {
     type: yesno
+  }
+
+  parameter: filter_logic {
+    type: unquoted
+    allowed_value: {
+      label: "OR"
+      value: "OR"
+    }
+    allowed_value: {
+      label: "AND"
+      value: "AND"
+    }
   }
 
   dimension: bool {
@@ -217,10 +233,6 @@ dimension: date_expression {
   html: Date is {{ _filters['orders.created_date'] }} ;;
 }
 
-filter: date_input {
-  type: date
-}
-
 parameter: timeframe_select {
   type: string
   allowed_value: { value: "Week" }
@@ -276,6 +288,12 @@ parameter: country_input {
   suggest_dimension: users.country
 }
 #
+
+
+filter: date_input {
+    type: date
+  }
+
 dimension: date_start_input {
 #     hidden: yes
 sql: {% date_start date_input %} ;;
@@ -336,6 +354,11 @@ dimension_group: created {
   sql: ${TABLE}.created_at ;;
 #     datatype: date
   convert_tz: no
+}
+
+dimension: fiscalyearmonth {
+  type: string
+  sql: cast(${created_month} as string) ;;
 }
 
 dimension: created_date_month {
@@ -509,6 +532,15 @@ dimension_group: created_other {
     day_of_year
   ]
   sql: DATE_ADD(DATE_ADD(DATE_ADD(DATE_ADD(DATE_ADD(${created_raw}, INTERVAL 3 DAY), INTERVAL 9 HOUR), INTERVAL 35 MINUTE), INTERVAL 46 SECOND), INTERVAL 60 MICROSECOND) ;;
+  html:
+  {% if value != "now" | date: "%Y-%m-%d" %}
+  <p style="color: black; background-color: lightblue; font-size:100%; text-align:center">{{ rendered_value }}</p>
+  {% else %}
+  <p style="color: black; background-color: orange; font-size:100%; text-align:center">{{ rendered_value }}</p>
+  {% endif %}
+  ;;
+
+
 }
 
 filter: previous_period_filter {
@@ -603,11 +635,11 @@ measure: running_total {
 #   dimension: seconds {
 #     group_label: "Duration"
 #     type: number
-#     sql: ${date_diff_2};;
+#     sql: ${date_diff};;
 #   value_format: "[h]:mm:ss"
-# #     html: {{ rendered_value | date: "%X" }} ;;
+#     html: {{ rendered_value | date: "%X" }} ;;
 #     }
-
+#
 #   dimension:  date_diff {
 #     type: number
 #     sql: TIMESTAMPDIFF(SECOND,${created_raw},${created_other_date_raw})/86400.0;;
@@ -732,6 +764,8 @@ measure: running_total {
       value: "this week,last week"
     }
   }
+
+
 }
 
 # explore: cranberry_sauce {}

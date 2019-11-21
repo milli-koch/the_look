@@ -16,6 +16,17 @@ view: inventory_items {
     sql: ${TABLE}.cost ;;
   }
 
+  measure: total_cost {
+    type: sum
+    sql: ${cost} ;;
+    value_format_name: usd_0
+  }
+
+  measure: percent_of_total_cost {
+    type: percent_of_total
+    sql: ${total_cost} ;;
+  }
+
   dimension: dummy2 {
     type: string
     sql: ${cost} ;;
@@ -29,6 +40,18 @@ view: inventory_items {
     type: date
   }
 
+  dimension: sunday_start {
+    type: number
+    sql: case when ${created_day_of_week} = "Wednesday" then 4
+        when ${created_day_of_week} = "Thursday" then 5
+        when ${created_day_of_week} = "Friday" then 6
+        when ${created_day_of_week} = "Saturday" then 7
+        when ${created_day_of_week} = "Sunday" then 1
+        when ${created_day_of_week} = "Monday" then 2
+        when ${created_day_of_week} = "Tuesday" then 3
+        else null end;;
+  }
+
   dimension_group: created {
     type: time
     timeframes: [
@@ -37,9 +60,16 @@ view: inventory_items {
       time,
       week,
       month,
-      year
+      year,
+      day_of_week
     ]
     sql: ${TABLE}.created_at ;;
+  }
+
+  dimension: sunday {
+    type: date_day_of_week
+    order_by_field: sunday_start
+    sql: ${created_raw} ;;
   }
 
 #   dimension: created_date {
@@ -51,7 +81,10 @@ view: inventory_items {
     type: number
 #     hidden: yes
     sql: ${TABLE}.product_id ;;
+#     order_by_field:
   }
+
+
 
   dimension_group: sold {
     type: time

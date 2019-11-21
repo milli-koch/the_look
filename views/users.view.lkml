@@ -18,6 +18,23 @@ view: users {
     }
   }
 
+  parameter: filter_logic {
+    type: unquoted
+    allowed_value: {
+      label: "OR"
+      value: "OR"
+    }
+    allowed_value: {
+      label: "AND"
+      value: "AND"
+    }
+  }
+
+  measure: aggregate_string {
+    type: string
+    sql: case when ${count} > 100 then "yes" else "no" end ;;
+  }
+
   # measure: has_more_than_one_order {
   #   type: count
   #   filters: {
@@ -70,8 +87,21 @@ view: users {
   dimension: name {
     type: string
     sql: concat(${first_name}, " ", ${last_name}) ;;
-    html: {{ value }} ;;
-#     link: {
+    html:
+    <table  style="background-color:#E7E6E6;width:100%;height:105px;" >
+    <tr  style="width auto;height : auto;">
+
+    <td >
+    <a  href="target="new" https://localhost:9999/dashboards/4" >
+    <button  style="box-shadow: inset 2px 25px 12px rgba(251,251,251,.5), 0 3px 3px rgba(0,0,0,.7),0 3px 15px rgba(0,0,0,.1); border-radius: 4px;background-color:#9CC8E1;
+    font-family: Bodoni MT,Didot,Didot LT STD,Hoefler Text,Garamond,Times New Roman,serif;font-style:bold;text-align:center;width:auto;height:auto;
+    border: 2px white;border-style: outset;font-size:250%;display: block;margin:auto;justify-content: center">&nbsp;All-In Home&nbsp;</button>
+    </a>
+    </td>
+    <td >
+
+    ;;
+    #     link: {
 #       label: "User Dashboard"
 #       url: "{% if users.first_name._is_selected %}
 #       /dashboards/4
@@ -110,8 +140,12 @@ view: users {
 
   dimension: age {
     type: number
-    sql: (${TABLE}.age)*10 ;;
-    value_format: "[>=1000000000]0,,,\" B\"; [>=1000000]0,,\" M\";[>=1000]0,\" K\";[>=1000000000]0;0"
+    sql: ${TABLE}.age ;;
+    # value_format: "[>=1000000000]0,,,\" B\"; [>=1000000]0,,\" M\";[>=1000]0,\" K\";[>=1000000000]0;0"
+  }
+
+  filter: age_filter {
+    type: number
   }
 
   measure: total_age {
@@ -165,13 +199,21 @@ view: users {
   dimension: first_name {
     # required_access_grants: [user_fields]
     type: string
-    sql: ${TABLE}.first_name ;;
-    html: <b><center>{{value}}</center></b> ;;
+    # sql: ${TABLE}.first_name ;;
+    link: {
+      url: "https://localhost:9999/dashboards/{{ users.id }}"
+      label: "link"
+    }
   }
 
   dimension: gender {
     type: string
     sql:${TABLE}.gender ;;
+  }
+
+  dimension: gender_formatted {
+    type: string
+    sql: case when ${gender} = "m" then "Male" else "Female" end ;;
   }
 
   dimension: is_female {
@@ -187,7 +229,13 @@ view: users {
   dimension: state {
     type: string
     sql: ${TABLE}.state ;;
-    map_layer_name: us_canada
+    # map_layer_name: us_canada
+    suggest_persist_for: "30 seconds"
+  }
+
+  filter: state_filter {
+    type: string
+    suggest_dimension: state
   }
 
   measure: small_states {

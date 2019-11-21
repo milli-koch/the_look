@@ -9,6 +9,31 @@ view: products {
     sql: ${TABLE}.id ;;
   }
 
+  dimension: number {
+    type: number
+    sql: 1.23 ;;
+    value_format: "#.000"
+  }
+
+  dimension: abc {
+    sql: "abc" ;;
+  }
+
+  dimension: lookup {
+    sql: {% if  products.abc._value == "abc" %}
+    "a"
+    {% endif %}
+    {% if products.abc._value contains "b" %}
+    "b"
+    {% endif %}
+    {% if abc._value contains 'c' %}
+    "c"
+    {% else %}
+    "fail"
+    {% endif %}
+;;
+  }
+
   dimension: brand {
     label: "brand"
     type: string
@@ -21,7 +46,7 @@ view: products {
     type: number
   }
 
-  parameter: category_param {
+  filter: category_param {
     type: string
     suggest_dimension: category
   }
@@ -34,17 +59,25 @@ view: products {
   dimension: category {
     type: string
     sql: ${TABLE}.category ;;
-    html: {% assign var = category_param._parameter_value  | replace: "&#39;", "" %}
-          {% if category_param._is_filtered %}
-          {% if value == var %}
-          <p style="background-color: lemonchiffon; font-size:100%; text-align:center">{{ value }}</p>
-          {% else %}
-          <p style="background-color: lightcyan; font-size:100%; text-align:center">{{ value }}</p>
-          {% endif %}
-          {% else %}
-          {{ rendered_value }}
-          {% endif %}
-          ;;
+#     order_by_field: brand
+#     html: {% assign var = category_param._parameter_value  | replace: "&#39;", "" %}
+#           {% if category_param._is_filtered %}
+#           {% if value == var %}
+#           <p style="background-color: lemonchiffon; font-size:100%; text-align:center">{{ value }}</p>
+#           {% else %}
+#           <p style="background-color: lightcyan; font-size:100%; text-align:center">{{ value }}</p>
+#           {% endif %}
+#           {% else %}
+#           {{ rendered_value }}
+#           {% endif %}
+#           ;;
+  }
+
+  dimension: templated_filter {
+    sql: case when  ${category} IN("jeans", "pants")
+    then "pants"
+    else "other"
+    end ;;
   }
 
 
@@ -53,6 +86,33 @@ view: products {
     sql: ${TABLE}.category ;;
     html: {{ value | url_encode }} ;;
     }
+
+  dimension: sfdc_size_segmentation {
+    type: string
+    case: {
+      when: {
+        sql: ${TABLE}.department = "L-ENT" ;;
+        label: "L-ENT"
+      }
+      when: {
+        sql: ${TABLE}.department = "ENT" ;;
+        label: "ENT"
+      }
+      when: {
+        sql: ${TABLE}.department = "MM" ;;
+        label: "MM"
+      }
+      when: {
+        sql: ${TABLE}.department = "ESB" ;;
+        label: "ESB"
+      }
+      else: "UNKNOWN"
+    }
+    label: "Segment"
+    view_label: "2. Team Attributes"
+    # alpha_sort: no
+  }
+
 
   dimension: department {
     # label: "department"
@@ -67,6 +127,8 @@ view: products {
       }
       else: "NA"
     }
+
+
 
     # sql: case when ${TABLE}.department = "Men" then "Men" else "Women" end   ;;
 #     label: "green"
@@ -159,6 +221,7 @@ dimension: order_by_int {
       field: category
       value: "Accessories,Jeans"
     }
+
   }
 
 
