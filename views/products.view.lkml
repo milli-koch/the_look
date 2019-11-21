@@ -228,7 +228,7 @@ dimension: order_by_int {
   measure: count {
     type: count
     drill_fields: [id, item_name, inventory_items.count]
-    # link: {label: "drill" url: "{{link}}"}
+    link: {label: "drill" url: "{{link}}&total=on"}
     value_format_name: decimal_0
   }
 }

@@ -36,10 +36,10 @@ explore: orders {
 #     }
 #   }
 
-  sql_always_where:
-  {% condition order_items.date_filter %} ${orders.created_date} {% endcondition %}  OR
-  {% condition orders.date_input %} ${order_items.returned_date} {% endcondition %}
-  ;;
+#   sql_always_where:
+#   {% condition order_items.date_filter %} ${orders.created_date} {% endcondition %}  OR
+#   {% condition orders.date_input %} ${order_items.returned_date} {% endcondition %}
+#   ;;
 
   # {% if orders.day_ago._parameter_value  == 1 %}
   # ${inventory_items.created_date} = date_add(${created_date}, interval -{% parameter inventory_items.days_ago %} day)
@@ -62,8 +62,8 @@ explore: orders {
     #     }
     #   }
 
-#       sql_always_where: {% condition order_items.date_filter %} ${created_raw} {% endcondition %}
-#       and {% condition order_items.date_filter %} ${created_other_raw} {% endcondition %};;
+    #   sql_always_where: {% condition orders.date_filter %} ${created_raw} {% endcondition %}
+    #   and {% condition orders.date_filter %} ${created_other_raw} {% endcondition %};;
     #   persist_with: four_hour_cache
     #   sql_always_where:
     #   {% if orders.date_filter._is_filtered %}
@@ -80,12 +80,6 @@ explore: orders {
     sql_on: ${orders.user_id} = ${users.id} ;;
     type: left_outer
     relationship: many_to_one
-  }
-
-  join: user_facts {
-    sql_on: ${users.name} = ${user_facts.name} ;;
-    type: left_outer
-    relationship: one_to_one
   }
 
   join: order_items {
@@ -213,18 +207,14 @@ explore: period_over_period {
 }
 
 
-explore: inventory {
-  from: inventory_items
+explore: inventory_items {
 #   label: "Explorename"
   join: products {
     type: inner
-    sql_on: {{_explore._name}}.product_id = ${products.id};;
+    sql_on: ${inventory_items.product_id} = ${products.id}
+      and {% condition inventory_items.created_date %} ${inventory_items.created_date} {% endcondition %};;
     relationship: many_to_one
   }
-}
-
-explore: ii {
-  extends: [inventory]
 }
 
 explore: order_items {
