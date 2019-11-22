@@ -131,3 +131,5 @@ join: users {
 }
 
 explore: customer_facts {}
+
+explore: sleep_test {}
