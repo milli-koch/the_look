@@ -1,7 +1,7 @@
 connection: "thelook"
 
 include: "/views/*.view"
-include: "../extending_view.view"
+# include: "../extending_view.view"
 include: "/dashboards/*.dashboard.lookml"
 include: "/other/products.explore.lkml"
 include: "/views/order_facts/*.view"
