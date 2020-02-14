@@ -41,4 +41,13 @@ view: events {
     type: count
     drill_fields: [id, users.first_name, users.id, users.last_name]
   }
+  parameter: date_filter {
+    type: date
+  }
+
+  dimension: date_result {
+    type: date
+    sql:{% parameter date_filter %};;
+  }
+
 }

@@ -15,10 +15,17 @@ view: orders {
       date,
       week,
       month,
+      month_name,
       quarter,
       year
     ]
     sql: ${TABLE}.created_at ;;
+  }
+
+  dimension: time {
+    type: number
+    value_format: "h:mm:ss"
+  sql: 0.0006924276323526681 ;;
   }
 
   dimension: status {
