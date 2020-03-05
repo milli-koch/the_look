@@ -15,17 +15,17 @@ view: orders {
     {% endif %};;
   }
 
-  parameter: cohort_stage {
-    label: "Cohort Stage"
-    type: string
-    suggest_dimension: orders.stage
-    default_value: "{{ _localization['My Key'] }}"
-  }
+  # parameter: cohort_stage {
+  #   label: "Cohort Stage"
+  #   type: string
+  #   suggest_dimension: orders.stage
+  #   default_value: "{{ _localization['My Key'] }}"
+  # }
 
-  dimension: stage {
-    label: "Stage"
-    sql:  '{{ _localization['My Key'] }}'  ;;
-  }
+  # dimension: stage {
+  #   label: "Stage"
+  #   sql:  '{{ _localization['My Key'] }}'  ;;
+  # }
 
   # dimension: if_in_query {
   #   type: string

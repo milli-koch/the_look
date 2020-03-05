@@ -2,10 +2,10 @@ view: customer_facts {
   derived_table: {
     sql:
       SELECT
-        customer_id,
-        SUM(sale_price) AS lifetime_spend
+        id as customer_id,
+        SUM(retail_price) AS lifetime_spend
       FROM
-        order
+        products
     ;;
     indexes: ["customer_id"]
     datagroup_trigger: the_look_default_datagroup
