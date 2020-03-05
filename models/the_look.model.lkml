@@ -1,7 +1,7 @@
 connection: "thelook"
 
 include: "/views/*.view"
-include: "../extending_view.view"
+# include: "../extending_view.view"
 include: "/dashboards/*.dashboard.lookml"
 include: "/other/products.explore.lkml"
 include: "/views/order_facts/*.view"
@@ -24,6 +24,28 @@ access_grant: user_fields {
   user_attribute: department
   allowed_values: ["dcl"]
 }
+
+
+
+
+### will not include users.email
+explore: users_ephemeral {
+  fields: [ALL_FIELDS*, -users.email]
+  view_name: users
+}
+
+### will include users.email
+explore: users_ephemeral_1 {
+  extends: [users_ephemeral]
+  fields: [ALL_FIELDS*]
+}
+
+### will not include users.email
+explore: users_ephemeral_2 {
+  extends: [users_ephemeral]
+}
+
+
 
 explore: orders {
 #   fields: [ALL_FIELDS*, -orders*]
@@ -80,6 +102,12 @@ explore: orders {
     sql_on: ${orders.user_id} = ${users.id} ;;
     type: left_outer
     relationship: many_to_one
+  }
+
+  join: order_facts {
+    sql_on: ${order_facts.id}=${orders.id} ;;
+    type: left_outer
+    relationship: one_to_one
   }
 
   join: order_items {
