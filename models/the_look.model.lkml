@@ -25,6 +25,28 @@ access_grant: user_fields {
   allowed_values: ["dcl"]
 }
 
+
+
+
+### will not include users.email
+explore: users_ephemeral {
+  fields: [ALL_FIELDS*, -users.email]
+  view_name: users
+}
+
+### will include users.email
+explore: users_ephemeral_1 {
+  extends: [users_ephemeral]
+  fields: [ALL_FIELDS*]
+}
+
+### will not include users.email
+explore: users_ephemeral_2 {
+  extends: [users_ephemeral]
+}
+
+
+
 explore: orders {
 #   fields: [ALL_FIELDS*, -orders*]
 #   sql_always_where: ${created_year} = extract(year from STR_TO_DATE(${fiscalyearmonth}))
@@ -80,6 +102,12 @@ explore: orders {
     sql_on: ${orders.user_id} = ${users.id} ;;
     type: left_outer
     relationship: many_to_one
+  }
+
+  join: order_facts {
+    sql_on: ${order_facts.id}=${orders.id} ;;
+    type: left_outer
+    relationship: one_to_one
   }
 
   join: order_items {
