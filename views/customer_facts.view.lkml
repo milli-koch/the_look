@@ -9,6 +9,7 @@ view: customer_facts {
     ;;
     indexes: ["customer_id"]
     datagroup_trigger: the_look_default_datagroup
+    publish_as_db_view: yes
   }
 
   dimension: customer_id {
