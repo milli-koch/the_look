@@ -204,17 +204,17 @@ view: orders {
 #         }
 ##        url:"/dashboards/306?Customer_ID={{ _filters['Customer.Customer_id_filter'] | url_encode }}"  }
 ##    html: <font size="10" color="#000000">{{rendered_value}} ;;
-    html:
-      {% if _user_attributes['sw_embed_domain'] | size > 0 %}
-        <a href="/embed/dashboards/306?Customer={{ _filters['Customer.Customer_id_filter'] | url_encode }}
-        {% if _user_attributes['sw_embed_domain'] | size > 0 %}&embed_domain={{ _user_attributes['sw_embed_domain'] }}
-        {% endif %}" target="_blank">Drill to State</a>
-      {% else%}
-        <a href="/dashboards/306?Customer={{ _filters['Customer.Customer_id_filter'] | url_encode }}
-        {% if _user_attributes['sw_embed_domain'] | size > 0 %}&embed_domain={{ _user_attributes['sw_embed_domain'] }}
-        {% endif %}" target="_blank">Drill to State</a>
-      {% endif %}
-      ;;
+#     html:
+#       {% if _user_attributes['sw_embed_domain'] | size > 0 %}
+#         <a href="/embed/dashboards/306?Customer={{ _filters['Customer.Customer_id_filter'] | url_encode }}
+#         {% if _user_attributes['sw_embed_domain'] | size > 0 %}&embed_domain={{ _user_attributes['sw_embed_domain'] }}
+#         {% endif %}" target="_blank">Drill to State</a>
+#       {% else%}
+#         <a href="/dashboards/306?Customer={{ _filters['Customer.Customer_id_filter'] | url_encode }}
+#         {% if _user_attributes['sw_embed_domain'] | size > 0 %}&embed_domain={{ _user_attributes['sw_embed_domain'] }}
+#         {% endif %}" target="_blank">Drill to State</a>
+#       {% endif %}
+#       ;;
   }
 
   dimension: created_year_test {
@@ -547,13 +547,13 @@ dimension_group: created_other {
     day_of_year
   ]
   sql: DATE_ADD(DATE_ADD(DATE_ADD(DATE_ADD(DATE_ADD(${created_raw}, INTERVAL 3 DAY), INTERVAL 9 HOUR), INTERVAL 35 MINUTE), INTERVAL 46 SECOND), INTERVAL 60 MICROSECOND) ;;
-  html:
-  {% if value != "now" | date: "%Y-%m-%d" %}
-  <p style="color: black; background-color: lightblue; font-size:100%; text-align:center">{{ rendered_value }}</p>
-  {% else %}
-  <p style="color: black; background-color: orange; font-size:100%; text-align:center">{{ rendered_value }}</p>
-  {% endif %}
-  ;;
+  # html:
+  # {% if value != "now" | date: "%Y-%m-%d" %}
+  # <p style="color: black; background-color: lightblue; font-size:100%; text-align:center">{{ rendered_value }}</p>
+  # {% else %}
+  # <p style="color: black; background-color: orange; font-size:100%; text-align:center">{{ rendered_value }}</p>
+  # {% endif %}
+  # ;;
 
 
 }

@@ -9,7 +9,7 @@ derived_table: {
   # FROM demo_db.orders;;
   sql: SELECT 1234567890987654321 as select_field ;;
   datagroup_trigger: datagroup_name
-  # indexes: ["select_field"]
+  indexes: ["select_field"]
   }
 
 

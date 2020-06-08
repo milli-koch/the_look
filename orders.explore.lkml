@@ -1,4 +1,4 @@
-include: "*.view"
+#include: "*.view"
 
 explore: orders {
   from: orders

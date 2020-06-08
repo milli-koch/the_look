@@ -1,13 +1,13 @@
 connection: "thelook_events"
 
-include: "*.view.lkml"                       # include all views in this project
+# include: "*.view.lkml"                       # include all views in this project
 
-explore: users {
-access_filter:{
-  field: users.age
-  user_attribute: age_advanced
-}
-}
+# explore: users {
+# access_filter:{
+#   field: users.age
+#   user_attribute: age_advanced
+# }
+# }
 # include: "my_dashboard.dashboard.lookml"   # include a LookML dashboard called my_dashboard
 
 # # Select the views that should be a part of this model,

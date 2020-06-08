@@ -87,45 +87,45 @@ view: users {
   dimension: name {
     type: string
     sql: concat(${first_name}, " ", ${last_name}) ;;
-    html:
-    <table  style="background-color:#E7E6E6;width:100%;height:105px;" >
-    <tr  style="width auto;height : auto;">
-
-    <td >
-    <a  href="target="new" https://localhost:9999/dashboards/4" >
-    <button  style="box-shadow: inset 2px 25px 12px rgba(251,251,251,.5), 0 3px 3px rgba(0,0,0,.7),0 3px 15px rgba(0,0,0,.1); border-radius: 4px;background-color:#9CC8E1;
-    font-family: Bodoni MT,Didot,Didot LT STD,Hoefler Text,Garamond,Times New Roman,serif;font-style:bold;text-align:center;width:auto;height:auto;
-    border: 2px white;border-style: outset;font-size:250%;display: block;margin:auto;justify-content: center">&nbsp;All-In Home&nbsp;</button>
-    </a>
-    </td>
-    <td >
-
-    ;;
-    #     link: {
+#     html:
+#     <table  style="background-color:#E7E6E6;width:100%;height:105px;" >
+#     <tr  style="width auto;height : auto;">
+#
+#     <td >
+#     <a  href="target="new" https://localhost:9999/dashboards/4" >
+#     <button  style="box-shadow: inset 2px 25px 12px rgba(251,251,251,.5), 0 3px 3px rgba(0,0,0,.7),0 3px 15px rgba(0,0,0,.1); border-radius: 4px;background-color:#9CC8E1;
+#     font-family: Bodoni MT,Didot,Didot LT STD,Hoefler Text,Garamond,Times New Roman,serif;font-style:bold;text-align:center;width:auto;height:auto;
+#     border: 2px white;border-style: outset;font-size:250%;display: block;margin:auto;justify-content: center">&nbsp;All-In Home&nbsp;</button>
+#     </a>
+#     </td>
+#     <td >
+#
+#     ;;
+#     #     link: {
+# #       label: "User Dashboard"
+# #       url: "{% if users.first_name._is_selected %}
+# #       /dashboards/4
+# #       {% else %}
+# #       /dashboards/4?User={{ value }}&Date={{ _filters['users.created_date'] }}
+# #       &Gender={{ users.gender | url_encode }}
+# #       {% endif %}"
+# #     }
+# #     link: {
+# #       label: "Drill"
+# #       url: "?fields=users.name,users.city,users.state,users.zip&f[users.created_date]={{ _filters['users.created_date'] }}&f[users.name]={{ value }}&f[users.gender]={{ users.gender }}"
+# #     }
+#     link: {
 #       label: "User Dashboard"
 #       url: "{% if users.first_name._is_selected %}
 #       /dashboards/4
 #       {% else %}
-#       /dashboards/4?User={{ value }}&Date={{ _filters['users.created_date'] }}
-#       &Gender={{ users.gender | url_encode }}
+#       /dashboards/4?User={{ value }}&Date={{ _filters['users.created_date'] }}&Gender={{ users.gender | url_encode }}
 #       {% endif %}"
 #     }
 #     link: {
 #       label: "Drill"
 #       url: "?fields=users.name,users.city,users.state,users.zip&f[users.created_date]={{ _filters['users.created_date'] }}&f[users.name]={{ value }}&f[users.gender]={{ users.gender }}"
 #     }
-    link: {
-      label: "User Dashboard"
-      url: "{% if users.first_name._is_selected %}
-      /dashboards/4
-      {% else %}
-      /dashboards/4?User={{ value }}&Date={{ _filters['users.created_date'] }}&Gender={{ users.gender | url_encode }}
-      {% endif %}"
-    }
-    link: {
-      label: "Drill"
-      url: "?fields=users.name,users.city,users.state,users.zip&f[users.created_date]={{ _filters['users.created_date'] }}&f[users.name]={{ value }}&f[users.gender]={{ users.gender }}"
-    }
   }
 
   filter: user {
