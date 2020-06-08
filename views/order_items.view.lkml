@@ -138,14 +138,14 @@ view: order_items {
   dimension: sale_price {
     type: number
     sql: ${TABLE}.sale_price ;;
-    value_format_name: usd
-    html: <font color="green">{{rendered_value}}</font> ;;
+    value_format: "0.000,,\" M\""
+#     html: <font color="green">{{rendered_value}}</font> ;;
   }
 
   measure: total_sale_price {
     type: sum
     sql: ${TABLE}.sale_price ;;
-#     value_format_name: usd_0
+    value_format: "0.000,,"
 
   }
 

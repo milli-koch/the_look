@@ -9,6 +9,31 @@ view: products {
     sql: ${TABLE}.id ;;
   }
 
+  dimension: number {
+    type: number
+    sql: 1.23 ;;
+    value_format: "#.000"
+  }
+
+  dimension: abc {
+    sql: "abc" ;;
+  }
+
+  dimension: lookup {
+    sql: {% if  products.abc._value == "abc" %}
+    "a"
+    {% endif %}
+    {% if products.abc._value contains "b" %}
+    "b"
+    {% endif %}
+    {% if abc._value contains 'c' %}
+    "c"
+    {% else %}
+    "fail"
+    {% endif %}
+;;
+  }
+
   dimension: brand {
     label: "brand"
     type: string
@@ -21,26 +46,40 @@ view: products {
     type: number
   }
 
-  parameter: category_param {
+  filter: category_param {
     type: string
     suggest_dimension: category
   }
 
-dimension: var {
-  sql: 1 ;;
-  html:  {{ category_param._parameter_value  | replace: "&#39;", "" }};;
-}
+  dimension: var {
+    sql: 1 ;;
+    html:  {{ category_param._parameter_value  | replace: "&#39;", "" }};;
+  }
 
   dimension: category {
     type: string
     sql: ${TABLE}.category ;;
-    html: {% assign var = category_param._parameter_value  | replace: "&#39;", "" %}
-    {% if value == var %}
-    <font color="darkgreen">{{ rendered_value }}</font>
-    {% else %}
-    <font color="darkred">{{ rendered_value }}</font>
-    {% endif %} ;;
-    }
+#     order_by_field: brand
+#     html: {% assign var = category_param._parameter_value  | replace: "&#39;", "" %}
+#           {% if category_param._is_filtered %}
+#           {% if value == var %}
+#           <p style="background-color: lemonchiffon; font-size:100%; text-align:center">{{ value }}</p>
+#           {% else %}
+#           <p style="background-color: lightcyan; font-size:100%; text-align:center">{{ value }}</p>
+#           {% endif %}
+#           {% else %}
+#           {{ rendered_value }}
+#           {% endif %}
+#           ;;
+  }
+
+  dimension: templated_filter {
+    sql: case when  ${category} IN("jeans", "pants")
+    then "pants"
+    else "other"
+    end ;;
+  }
+
 
   dimension: encoded_category {
     type: string
@@ -48,12 +87,52 @@ dimension: var {
     html: {{ value | url_encode }} ;;
     }
 
+  dimension: sfdc_size_segmentation {
+    type: string
+    case: {
+      when: {
+        sql: ${TABLE}.department = "L-ENT" ;;
+        label: "L-ENT"
+      }
+      when: {
+        sql: ${TABLE}.department = "ENT" ;;
+        label: "ENT"
+      }
+      when: {
+        sql: ${TABLE}.department = "MM" ;;
+        label: "MM"
+      }
+      when: {
+        sql: ${TABLE}.department = "ESB" ;;
+        label: "ESB"
+      }
+      else: "UNKNOWN"
+    }
+    label: "Segment"
+    view_label: "2. Team Attributes"
+    # alpha_sort: no
+  }
+
+
   dimension: department {
-    label: "department"
+    # label: "department"
+    case: {
+      when: {
+        sql: ${TABLE}.department = "Men" ;;
+        label: "Men"
+      }
+      when: {
+        sql: ${TABLE}.department = "Women" ;;
+        label: "Women"
+      }
+      else: "NA"
+    }
+
+
+
+    # sql: case when ${TABLE}.department = "Men" then "Men" else "Women" end   ;;
 #     label: "green"
 #     group_label: "apples"
-    type: string
-    sql: ${TABLE}.department ;;
 #     html: {% if value == 'Men' %}
 #     <p style="color: black; background-color: green; font-size:100%; text-align:center">{{ value }}</p>
 #     {% elsif value == 'Women' %}
@@ -64,9 +143,14 @@ dimension: var {
 #     ;;
 }
 
+dimension: order_by_int {
+  type: number
+  sql: 1 ;;
+}
+
   dimension: item_name {
-    label: "red"
-    group_label: "tomatoes"
+    # label: "red"
+    # group_label: "tomatoes"
     type: string
     sql: ${TABLE}.item_name ;;
   }
@@ -87,7 +171,16 @@ dimension: var {
   measure: total_retail {
     value_format_name: usd
     type: sum
-    sql: ${retail_price} ;;
+    sql: ${TABLE}.retail_price ;;
+  }
+
+  measure: retail_filtered {
+    type: sum
+    sql: ${TABLE}.retail_price ;;
+    filters: {
+      field: category
+      value: "Accessories"
+    }
   }
 
   dimension: currency {
@@ -120,6 +213,15 @@ dimension: var {
   dimension: sku {
     type: string
     sql: ${TABLE}.sku ;;
+  }
+
+  measure: count_filtered {
+    type: count
+    filters: {
+      field: category
+      value: "Accessories,Jeans"
+    }
+
   }
 
 

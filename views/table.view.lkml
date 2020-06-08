@@ -59,7 +59,7 @@ view: table {
 #   dimension_group: most_recent_purchase {
 #     description: "The date when each user last ordered"
 #     type: time
-#     timeframes: [date, week, month, year]
+#     timeframes: [date,week, month, year]
 #     sql: ${TABLE}.most_recent_purchase_at ;;
 #   }
 #

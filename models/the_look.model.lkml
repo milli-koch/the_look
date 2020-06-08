@@ -1,6 +1,8 @@
 connection: "thelook"
 
 include: "/views/*.view"
+# include: "../extending_view.view"
+include: "/dashboards/*.dashboard.lookml"
 include: "/other/products.explore.lkml"
 include: "/views/order_facts/*.view"
 # include: "/manifest.lkml"
@@ -10,9 +12,6 @@ datagroup: the_look_default_datagroup {
   max_cache_age: "24 hours"
 }
 
-datagroup: four_hour_cache {
-  max_cache_age: "4 hours"
-}
 
 map_layer: us_canada {
   url: "https://github.com/milli-koch/the_look/blob/master/us_canada.topojson"
@@ -26,58 +25,52 @@ access_grant: user_fields {
   allowed_values: ["dcl"]
 }
 
-explore: sme_lookml {
-  always_filter: {
-    filters: {
-      field: category_filter
-    }
-    filters: {
-      field: date_filter
-    }
-    filters: {
-      field: region
-    }
-  }
-}
 
-explore: order_facts_dynamic {}
 
-explore: users {}
 
-explore: products {
-  extends: [products_base]
-  hidden: no
-  join: inventory_items {
-    sql_on: ${inventory_items.product_id} =  ${products.id} ;;
-    relationship: one_to_many
-  }
-}
-
-explore: user {
-  required_access_grants: [user_fields]
+### will not include users.email
+explore: users_ephemeral {
+  fields: [ALL_FIELDS*, -users.email]
   view_name: users
-#   view_label: "Users"
-#   label: "User"
-  from: users_ex
-  join: orders {
-    sql_on: ${orders.user_id} = ${users.id} ;;
-    relationship: many_to_one
-  }
 }
 
-explore: accounts {
-  extends: [user]
+### will include users.email
+explore: users_ephemeral_1 {
+  extends: [users_ephemeral]
+  fields: [ALL_FIELDS*]
 }
+
+### will not include users.email
+explore: users_ephemeral_2 {
+  extends: [users_ephemeral]
+}
+
+
 
 explore: orders {
-  sql_always_where: {% if orders.filter_or_no._parameter_value == "true"  %}
-      ${id} > 10
-      {% else %}
-      1 = 1
-      {% endif %}
-      ;;
+#   fields: [ALL_FIELDS*, -orders*]
+#   sql_always_where: ${created_year} = extract(year from STR_TO_DATE(${fiscalyearmonth}))
+#   and ${created_date} <=  ;;
+#   always_filter: {
+#     filters: {
+#       field: users.user
+#       value: "Milli"
+#     }
+#   }
+
+#   sql_always_where:
+#   {% condition order_items.date_filter %} ${orders.created_date} {% endcondition %}  OR
+#   {% condition orders.date_input %} ${order_items.returned_date} {% endcondition %}
+#   ;;
+
+  # {% if orders.day_ago._parameter_value  == 1 %}
+  # ${inventory_items.created_date} = date_add(${created_date}, interval -{% parameter inventory_items.days_ago %} day)
+  # {% else %}
+  # 1 = 1
+  # {% endif %};;
     #   always_filter: {
-    #     filters: {
+    #     filters: {  {{ orders.filter_logic._parameter_value }}
+
     #       field: created_date
     #       value: "6 months"
     #     }
@@ -111,6 +104,12 @@ explore: orders {
     relationship: many_to_one
   }
 
+  join: order_facts {
+    sql_on: ${order_facts.id}=${orders.id} ;;
+    type: left_outer
+    relationship: one_to_one
+  }
+
   join: order_items {
     sql_on: ${orders.id} = ${order_items.order_id} ;;
     type: left_outer
@@ -129,6 +128,77 @@ explore: orders {
   relationship: many_to_one
 }
 }
+
+explore: users {
+  always_filter: {
+    filters: {
+      field: state_filter
+      value: ""
+    }
+    filters: {
+      field: filter_logic
+      value: "OR"
+    }
+    filters: {
+      field: age_filter
+      value: ""
+    }
+  }
+  sql_always_where: {% condition users.state_filter %} users.state {% endcondition %}
+  {% parameter users.filter_logic %}
+  {% condition users.age_filter %} users.age {% endcondition %};;
+}
+
+explore: sme_lookml {
+  always_filter: {
+    filters: {
+      field: category_filter
+    }
+    filters: {
+      field: date_filter
+    }
+    filters: {
+      field: region
+    }
+  }
+}
+
+explore: order_facts_dynamic {}
+
+explore: users_alias {
+  from: users
+}
+
+# explore: products {
+#   extends: [products_base]
+#   hidden: no
+#   join: inventory_items {
+#     sql_on: ${inventory_items.product_id} =  ${products.id} ;;
+#     relationship: one_to_many
+#   }
+# }
+
+# explore: products {
+#   sql_always_where: ${category} = {% parameter category_param %}
+#   AND ${brand} = {% parameter brand_param %}     ;;
+# }
+
+explore: user {
+  required_access_grants: [user_fields]
+  view_name: users
+#   view_label: "Users"
+#   label: "User"
+  from: users_ex
+  join: orders {
+    sql_on: ${orders.user_id} = ${users.id} ;;
+    relationship: many_to_one
+  }
+}
+
+explore: accounts {
+  extends: [user]
+}
+
 
 # explore: users {
 #   fields: [ALL_FIELDS*, -created_raw]
