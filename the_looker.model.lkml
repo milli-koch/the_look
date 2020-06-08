@@ -2,6 +2,7 @@ connection: "thelook"
 
 include: "*.view"
 include: "products.explore.lkml"
+include: "*.dashboard.lookml"
 # include: "//schema/manifest.lkml"
 
 datagroup: the_look_default_datagroup {

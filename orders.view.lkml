@@ -17,31 +17,31 @@ view: orders {
   }
 
 
-  dimension: Drill_to_State{
-    label: "Drill to State"
-    sql: 'Drill to State' ;;
-#       link: {
-#       link: {
-#         label: "Drill to State"
-##     url: "https://sandbox-lookerbi.corelogic.net/dashboards/306?Customer_ID={{ _filters['lu_cust_vk.CustomerID'] | url_encode }}"
-##      icon_url: "https://looker.com/favicon.ico"
-##        url:"https://sandbox-lookerbi.corelogic.net/dashboards/306?Customer_ID={{ _filters['Customer.Customer_id_filter'] | url_encode }}"
-#         url:"./306?Customer_ID={{ _filters['Customer.Customer_id_filter'] | url_encode }}"
-#         }
-##        url:"/dashboards/306?Customer_ID={{ _filters['Customer.Customer_id_filter'] | url_encode }}"  }
-##    html: <font size="10" color="#000000">{{rendered_value}} ;;
-      html:
-      {% if _user_attributes['sw_embed_domain'] | size > 0 %}
-        <a href="/embed/dashboards/306?Customer={{ _filters['Customer.Customer_id_filter'] | url_encode }}
-        {% if _user_attributes['sw_embed_domain'] | size > 0 %}&embed_domain={{ _user_attributes['sw_embed_domain'] }}
-        {% endif %}" target="_blank">Drill to State</a>
-      {% else%}
-        <a href="/dashboards/306?Customer={{ _filters['Customer.Customer_id_filter'] | url_encode }}
-        {% if _user_attributes['sw_embed_domain'] | size > 0 %}&embed_domain={{ _user_attributes['sw_embed_domain'] }}
-        {% endif %}" target="_blank">Drill to State</a>
-      {% endif %}
-      ;;
-      }
+#   dimension: Drill_to_State{
+#     label: "Drill to State"
+#     sql: 'Drill to State' ;;
+# #       link: {
+# #       link: {
+# #         label: "Drill to State"
+# ##     url: "https://sandbox-lookerbi.corelogic.net/dashboards/306?Customer_ID={{ _filters['lu_cust_vk.CustomerID'] | url_encode }}"
+# ##      icon_url: "https://looker.com/favicon.ico"
+# ##        url:"https://sandbox-lookerbi.corelogic.net/dashboards/306?Customer_ID={{ _filters['Customer.Customer_id_filter'] | url_encode }}"
+# #         url:"./306?Customer_ID={{ _filters['Customer.Customer_id_filter'] | url_encode }}"
+# #         }
+# ##        url:"/dashboards/306?Customer_ID={{ _filters['Customer.Customer_id_filter'] | url_encode }}"  }
+# ##    html: <font size="10" color="#000000">{{rendered_value}} ;;
+#       html:
+#       {% if _user_attributes['sw_embed_domain'] | size > 0 %}
+#         <a href="/embed/dashboards/306?Customer={{ _filters['Customer.Customer_id_filter'] | url_encode }}
+#         {% if _user_attributes['sw_embed_domain'] | size > 0 %}&embed_domain={{ _user_attributes['sw_embed_domain'] }}
+#         {% endif %}" target="_blank">Drill to State</a>
+#       {% else%}
+#         <a href="/dashboards/306?Customer={{ _filters['Customer.Customer_id_filter'] | url_encode }}
+#         {% if _user_attributes['sw_embed_domain'] | size > 0 %}&embed_domain={{ _user_attributes['sw_embed_domain'] }}
+#         {% endif %}" target="_blank">Drill to State</a>
+#       {% endif %}
+#       ;;
+#       }
 
   dimension: date_is_mtd {
     type: yesno
