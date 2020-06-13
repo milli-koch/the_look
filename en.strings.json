@@ -1,7 +1,7 @@
 {
 "id" : "{{ products.id._value }}",
-"brand" : "Brand",
-"category" : "Category",
-"department" : "Department",
-"department_liquid": "{{ products.department._value }}"
+"brand" : "Brand locale",
+"category" : "Category locale",
+"department" : "Department locale",
+"department_liquid": "{{ products.category._value }}"
 }

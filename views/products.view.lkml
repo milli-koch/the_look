@@ -1,4 +1,4 @@
-# include: "/manifest.lkml"
+ include: "*manifest.lkml"
 view: products {
   sql_table_name: demo_db.products ;;
 

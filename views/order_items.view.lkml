@@ -124,7 +124,8 @@ view: order_items {
       week,
       month,
       quarter,
-      year
+      year,
+      day_of_week
     ]
     sql: ${TABLE}.returned_at ;;
   }
