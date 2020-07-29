@@ -37,6 +37,8 @@ view: orders {
   #   ;;
   # }
 
+
+
   dimension: end_date {
     sql: {% date_end created_date %} ;;
   }
@@ -68,9 +70,15 @@ view: orders {
   }
 
   dimension: id_filter {
-    type: yesno
-    sql: ${id} in (1,2,3,4) ;;
-  }
+    type: string
+    sql: ${id};;
+    html:
+      {% if order_items.sale_price._value < 0 %}
+      1
+      {% endif %}
+      {{ order_items.sale_price._value }}
+      {{ products.retail_price._value }};;
+}
 
   parameter: bool_filter {
     type: yesno
@@ -573,12 +581,13 @@ dimension: previous_period {
             CASE
               WHEN ${created_raw} >=  {% date_start previous_period_filter %}
                 AND ${created_raw} <= {% date_end previous_period_filter %}
-                THEN 'This Period'
+                THEN {% date_start previous_period_filter %}
               WHEN ${created_raw} >= DATE_ADD({% date_start previous_period_filter %}, INTERVAL -365 day)
                 AND ${created_raw} <= DATE_ADD({% date_end previous_period_filter %}, INTERVAL -365 day)
-                THEN 'Previous Period'
+                THEN {% date_end previous_period_filter %}
             END
           END ;;
+  html: {{rendered_value | date : "%F" }} ;;
 }
 
 measure: hours_formatted {

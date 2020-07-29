@@ -4,7 +4,7 @@ include: "/views/*.view"
 # include: "../extending_view.view"
 include: "/dashboards/*.dashboard.lookml"
 include: "/other/products.explore.lkml"
-include: "/views/order_facts/*.view"
+# include: "/views/order_facts/*.view"
 # include: "/manifest.lkml"
 
 datagroup: the_look_default_datagroup {
