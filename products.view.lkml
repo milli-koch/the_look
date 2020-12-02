@@ -8,6 +8,8 @@ view: products {
   }
 
   dimension: brand {
+    description: "{% if _view._name == 'products' %} ID for Users {% else %} Something else {% endif%}"
+    order_by_field: retail_price
     type: string
     sql: ${TABLE}.brand ;;
   }
