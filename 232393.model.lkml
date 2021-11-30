@@ -85,3 +85,21 @@ explore: zozo_table_20190507 {}
 explore: zozo_table_20190508 {}
 
 explore: zozo_table_null {}
+
+datagroup: max_cache_age_dg {
+  max_cache_age: "24 hours"
+}
+
+view: test_max_cache_age {
+  derived_table: {
+    sql: SELECT id FROM demo_db.inventory_items ;;
+    datagroup_trigger: max_cache_age_dg
+  }
+
+  dimension: id {
+    primary_key: yes
+    type: number
+    sql: ${TABLE}.id ;;
+  }
+}
+explore: test_max_cache_age {}
